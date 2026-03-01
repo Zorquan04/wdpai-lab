@@ -1,6 +1,8 @@
 <?php
 
+require_once "Routing.php";
 
-echo "<h1>Hi there!</h1>";
+$path = trim($_SERVER["REQUEST_URI"], '/');
+$path = parse_url($path, PHP_URL_PATH);
 
-echo "<h2>KACPER</h2>";
+Routing::run($path);
