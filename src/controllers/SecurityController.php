@@ -76,7 +76,6 @@ class SecurityController extends AppController {
     }
 
     public function logout() {
-        session_start();
         session_unset();
         session_destroy();
         header("Location: /");

@@ -1,0 +1,32 @@
+<?php
+
+ // Represents a single game entity from the store
+class Game {
+    private int $id;
+    private string $title;
+    private string $description;
+    private string $category;
+    private float $price;
+    private string $graphics;
+    private float $averageRating;
+
+    // Game constructor
+    public function __construct(int $id, string $title, string $description, string $category, float $price, string $graphics, float $averageRating) {
+        $this->id = $id;
+        $this->title = $title;
+        $this->description = $description;
+        $this->category = $category;
+        $this->price = $price;
+        $this->graphics = $graphics;
+        $this->averageRating = $averageRating;
+    }
+
+    // Getters
+    public function getId(): int { return $this->id; }
+    public function getTitle(): string { return $this->title; }
+    public function getDescription(): string { return $this->description; }
+    public function getCategory(): string { return $this->category; }
+    public function getPrice(): float { return $this->price; }
+    public function getGraphics(): string { return $this->graphics; }
+    public function getAverageRating(): float { return $this->averageRating; }
+}

@@ -1,5 +1,6 @@
 <?php
 
+// Represents a single user entity in the application
 class User {
     private ?int $id;
     private string $email;

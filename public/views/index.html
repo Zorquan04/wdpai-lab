@@ -9,12 +9,24 @@
     
     <div class="container layout">
       <main>
-        <h1>INDEX</h1>
+        <h1>Welcome to GameNest Store</h1>
+        
+        <div class="game-grid">
+            <?php foreach($games as $game): ?>
+                <div class="game-card">
+                    <h2><?= htmlspecialchars($game->getTitle()); ?></h2>
+                    <div class="game-category"><?= htmlspecialchars($game->getCategory()); ?></div>
+                    <p><?= htmlspecialchars($game->getDescription()); ?></p>
+                    
+                    <div class="game-price-row">
+                        <span class="price"><?= number_format($game->getPrice(), 2); ?> PLN</span>
+                        <span class="rating">⭐ <?= number_format($game->getAverageRating(), 2); ?></span>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        </div>
+
       </main>
-      <aside>
-        <p>TODO later</p>
-      </aside>
-      <footer>2026</footer>
     </div>
   </body>
 </html>

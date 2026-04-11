@@ -2,6 +2,7 @@
 
 require_once 'src/controllers/SecurityController.php';
 require_once 'src/controllers/DashboardController.php';
+require_once 'src/controllers/StoreController.php';
 
 class Routing {
     // Store controller instances (Singleton-like behavior)
@@ -26,8 +27,8 @@ class Routing {
             "action" => "index"
         ],
         "" => [
-            "controller" => "SecurityController",
-            "action" => "login"
+            "controller" => "StoreController",
+            "action" => "index"
         ]
     ];
 

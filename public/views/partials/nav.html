@@ -1,24 +1,32 @@
-<script src="public/scripts/main.js" defer></script>
+<script src="/public/scripts/main.js" defer></script>
 <nav>
   <div class="container">
-    <span><i class="fa-solid fa-sun"></i></span>
+    <span class="logo"><i class="fa-solid fa-gamepad"></i> GameNest</span>
 
     <i class="display-mobile fa-solid fa-bars"></i>
 
     <ul>
       <li>
-        <a href="/"><i class="fa-solid fa-house"></i> HOME</a>
+        <a href="/"><i class="fa-solid fa-store"></i> Store</a>
       </li>
-      <li>
-        <a href="/dashboard"
-          ><i class="fa-solid fa-address-book"></i> PROFILE</a
-        >
-      </li>
-      <li>
-        <a href="/dashboard"
-          ><i class="fa-solid fa-diagram-project"></i> ADD PROJECT</a
-        >
-      </li>
+      
+      <?php if(isset($_SESSION['user_id'])): ?>
+        <li>
+          <a href="/dashboard"><i class="fa-solid fa-user"></i> Profile</a>
+        </li>
+        <li>
+          <a href="#"><i class="fa-solid fa-layer-group"></i> Library</a> </li>
+        <li>
+          <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+        </li>
+      <?php else: ?>
+        <li>
+          <a href="/login"><i class="fa-solid fa-right-to-bracket"></i> Login</a>
+        </li>
+        <li>
+          <a href="/register"><i class="fa-solid fa-user-plus"></i> Register</a>
+        </li>
+      <?php endif; ?>
     </ul>
   </div>
 </nav>
