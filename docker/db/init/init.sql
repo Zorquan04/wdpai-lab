@@ -1,11 +1,17 @@
 CREATE TABLE users (
-    id SERIAL PRIMARY KEY,    
-    username VARCHAR(50) UNIQUE NOT NULL,
+    -- Klucz główny generowany automatycznie
+    id SERIAL PRIMARY KEY,
     
-    email VARCHAR(255) UNIQUE NOT NULL,    
+    -- Dane użytkownika z podstawową walidacją
+    username VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
     password TEXT NOT NULL,
     
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    -- Opcjonalne pole profilowe
+    full_name VARCHAR(100),
     
-    is_active BOOLEAN DEFAULT TRUE
+    -- Metadane systemowe
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

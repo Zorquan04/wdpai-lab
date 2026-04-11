@@ -1,4 +1,4 @@
-FROM php:8.3.18RC1-fpm-alpine3.21
+FROM php:8.3-fpm-alpine3.20
 
 ENV RUN_DEPS \
     zlib \
@@ -33,5 +33,3 @@ RUN echo 'memory_limit = -1' >> /usr/local/etc/php/conf.d/docker-php-memlimit.in
 
 # Copy the application code
 COPY . /app
-
-VOLUME ["/app"]
