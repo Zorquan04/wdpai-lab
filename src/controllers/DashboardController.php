@@ -3,12 +3,19 @@
 require_once 'AppController.php';
 
 class DashboardController extends AppController {
+    // Main dashboard view handler
+    public function index($id = null) {
+        // Temporary mock data (will be replaced with DB data later)
+        $data = [
+            "user" => "Kacper",
+            "role" => "admin",
+            "selectedId" => $id
+        ];
 
-    public function index() {
-        // TODO pobieranie danych z bazy
-        // wstawianie zmiennych na widok
-        $title = "INDEX";
-
-        return $this->render("index", ["title" => $title]);
+        // Render dashboard view with passed variables
+        return $this->render("index", [
+            "title" => "Dashboard",
+            "data" => $data
+        ]);
     }
 }

@@ -3,14 +3,11 @@
 require_once 'src/controllers/SecurityController.php';
 require_once 'src/controllers/DashboardController.php';
 
-// TODO musimy zapewnic, ze utworzony 
-// obiekt kontrollera ma tylko jedna instancję - SINGLETON
-
-// TODO 2 /dashboard -- wszystkei dnae
-// /dashboard/12234 -- wyciagnie nam jakis elemtn o wskaznaym ID 12234
-// REGEX
 class Routing {
+    // Store controller instances (Singleton-like behavior)
+    private static array $instances = [];
 
+    // Application routes configuration
     public static $routes = [
         "login" => [
             "controller" => "SecurityController",
@@ -26,23 +23,37 @@ class Routing {
         ],
     ];
 
+    // Return existing or create new controller instance
+    private static function getControllerInstance(string $controllerName) {
+        if (!isset(self::$instances[$controllerName])) {
+            self::$instances[$controllerName] = new $controllerName();
+        }
+
+        return self::$instances[$controllerName];
+    }
+
+    // Main routing logic
     public static function run(string $path) {
-        // TODO sprawdzać za pomoca array_key_exists
-        switch($path) {
-            case 'dashboard':
-            case '':
-            case 'login':
-                $controller = Routing::$routes[$path]["controller"];
-                $action = Routing::$routes[$path]["action"];
+        // Support for routes like /dashboard/123
+        $parts = explode('/', trim($path, '/'));
+        $route = $parts[0] ?? '';
+        $id = $parts[1] ?? null;
 
-                $controllerObj = new $controller;
-                $id = null;
+        // Check if route exists
+        if (array_key_exists($route, self::$routes)) {
 
-                $controllerObj->$action($id);
-                break; 
-            default:
-                include 'public/views/404.html';
-                break;
+            $controllerName = self::$routes[$route]["controller"];
+            $action = self::$routes[$route]["action"];
+
+            // Get controller instance
+            $controller = self::getControllerInstance($controllerName);
+
+            // Call action with optional ID parameter
+            $controller->$action($id);
+
+        } else {
+            // Fallback 404 page
+            include 'public/views/404.html';
         }
     }
 }
