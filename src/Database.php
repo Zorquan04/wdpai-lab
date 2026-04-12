@@ -9,12 +9,21 @@ class Database {
 
     // Private constructor to prevent instantiation
     private function __construct() {
-        // Login data consistent with your docker/db/Dockerfile
-        $host = 'db'; // name of the service from docker-compose.yaml
-        $port = '5432'; // default port within the docker network
-        $dbname = 'db';
-        $username = 'docker';
-        $password = 'docker';
+        // Path to the .env file in the project root directory containing the database connection data
+        $envPath = __DIR__ . '/../.env';
+        
+        if (!file_exists($envPath)) {
+            die("Missing .env file! Copy .env.example to .env and fill in the data.");
+        }
+
+        // Parsing the .env file
+        $env = parse_ini_file($envPath);
+
+        $host = $env['DB_HOST'];
+        $port = $env['DB_PORT'];
+        $dbname = $env['DB_NAME'];
+        $username = $env['DB_USER'];
+        $password = $env['DB_PASS'];
 
         try {
             // DSN (Data Source Name) for PostgreSQL
