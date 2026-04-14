@@ -2,7 +2,6 @@
 
 require_once 'AppController.php';
 require_once __DIR__ . '/../repository/UserRepository.php';
-require_once __DIR__ . '/../repository/LibraryRepository.php';
 
 class DashboardController extends AppController {
     private UserRepository $userRepository;
@@ -11,22 +10,53 @@ class DashboardController extends AppController {
         $this->userRepository = new UserRepository();
     }
 
-    // Main dashboard view handler
-    public function index($id = null) {
-        // Path Security - kicks out non-logged-in users to /login
+    public function index() {
         $this->checkAuth();
-
         $userId = $_SESSION['user_id'];
-
-        // Downloading data
+        
         $userDetails = $this->userRepository->getUserDetails($userId);
+        
+        // Clean retrieval of user data from the Repository
+        $mainUser = $this->userRepository->getUserById($userId);
 
-        // Render dashboard view with passed variables
+        // We read the available avatars from the folder
+        $avatars = $this->getAvailableAvatars();
+
         return $this->render("dashboard", [
             "title" => "Profile - GameNest",
-            "username" => $_SESSION['username'],
+            "username" => $mainUser->getUsername(),
+            "email" => $mainUser->getEmail(),
             "role" => $_SESSION['user_role'],
-            "details" => $userDetails
+            "details" => $userDetails,
+            "avatars" => $avatars
         ]);
+    }
+
+    public function updateProfile() {
+        $this->checkAuth();
+        
+        if ($this->isPost()) {
+            $userId = $_SESSION['user_id'];
+            
+            $data = [
+                'username' => trim($_POST['username'] ?? ''),
+                'email' => trim($_POST['email'] ?? ''),
+                'password' => $_POST['password'] ?? '', 
+                'name' => trim($_POST['name'] ?? ''),
+                'surname' => trim($_POST['surname'] ?? ''),
+                'bio' => trim($_POST['bio'] ?? ''),
+                'avatar' => $_POST['avatar'] ?? 'gaming-console.png' // updated default avatar file
+            ];
+
+            try {
+                $this->userRepository->updateFullProfile($userId, $data);
+                $_SESSION['username'] = $data['username']; 
+            } catch (Exception $e) {
+                // Database error
+            }
+        }
+        
+        header("Location: /dashboard");
+        exit();
     }
 }

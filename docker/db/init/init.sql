@@ -23,7 +23,7 @@ CREATE TABLE user_details (
     name VARCHAR(100),
     surname VARCHAR(100),
     bio TEXT,
-    avatar VARCHAR(255) DEFAULT 'default_avatar.png', -- path to predefined avatar
+    avatar VARCHAR(255) DEFAULT 'gaming-console.png', -- path to predefined avatar
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -120,8 +120,8 @@ GROUP BY g.id, g.title, g.average_rating;
 INSERT INTO users (username, email, password_hash, role) 
 VALUES ('admin', 'admin@gmail.com', '$2y$10$il9iJULRoOJWqY4L9PmOGeL32WJnLdPYWjtWtS3KnxWBXxWK6dQnG', 'ADMIN');
 
-INSERT INTO user_details (user_id, name, surname, bio) 
-VALUES (1, 'Main', 'Administrator', 'I am the owner of GameNest');
+INSERT INTO user_details (user_id, name, surname, bio, avatar) 
+VALUES (1, 'Main', 'Administrator', 'I am the owner of GameNest', 'gaming-console.png');
 
 -- A few games to start with
 INSERT INTO games (title, description, category, price, specification, graphics) VALUES 

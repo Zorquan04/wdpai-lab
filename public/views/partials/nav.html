@@ -11,11 +11,17 @@
       </li>
       
       <?php if(isset($_SESSION['user_id'])): ?>
+        <?php if(isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'ADMIN'): ?>
+          <li>
+            <a href="/admin" style="color: #cf6679;"><i class="fa-solid fa-hammer"></i> Admin</a>
+          </li>
+        <?php endif; ?>
         <li>
           <a href="/dashboard"><i class="fa-solid fa-user"></i> Profile</a>
         </li>
         <li>
-          <a href="/library"><i class="fa-solid fa-layer-group"></i> Library</a> </li>
+          <a href="/library"><i class="fa-solid fa-layer-group"></i> Library</a> 
+        </li>
         <li>
           <a href="/logout"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
         </li>

@@ -70,3 +70,23 @@ function buyGame(gameId) {
         messageSpan.innerText = "Connection error";
     });
 }
+
+// Revealing the profile edit form
+function toggleEditMode() {
+    document.getElementById('profile-view').classList.toggle('hidden');
+    document.getElementById('profile-edit').classList.toggle('hidden');
+}
+
+// Choosing an avatar in the form
+function selectAvatar(filename) {
+    // Deselect all
+    document.querySelectorAll('.avatar-option').forEach(img => {
+        img.classList.remove('selected');
+    });
+    // Select clicked (search by src attribute)
+    const selectedImg = document.querySelector(`.avatar-option[src="/public/resources/avatars/${filename}"]`);
+    if(selectedImg) selectedImg.classList.add('selected');
+    
+    // Update the hidden input for PHP
+    document.getElementById('avatar-input').value = filename;
+}

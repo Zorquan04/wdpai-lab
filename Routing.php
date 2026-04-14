@@ -6,6 +6,7 @@ require_once 'src/controllers/DashboardController.php';
 require_once 'src/controllers/StoreController.php';
 require_once 'src/controllers/GameController.php';
 require_once 'src/controllers/LibraryController.php';
+require_once 'src/controllers/AdminController.php';
 
 class Routing {
     // Store controller instances (Singleton-like behavior)
@@ -29,6 +30,10 @@ class Routing {
             "controller" => "DashboardController",
             "action" => "index"
         ],
+        "update-profile" => [
+            "controller" => "DashboardController", 
+            "action" => "updateProfile"
+        ],
         "library" => [
             "controller" => "LibraryController",
             "action" => "index"
@@ -44,6 +49,26 @@ class Routing {
         "add-review" => [
             "controller" => "GameController",
             "action" => "addReview"
+        ],
+        "admin" => [
+            "controller" => "AdminController", 
+            "action" => "index"
+        ],
+        "edit-user" => [
+            "controller" => "AdminController", 
+            "action" => "editUser"
+        ],
+        "update-user" => [
+            "controller" => "AdminController", 
+            "action" => "updateUser"
+        ],
+        "delete-user" => [
+            "controller" => "AdminController", 
+            "action" => "deleteUser"
+        ],
+        "change-role" => [
+            "controller" => "AdminController", 
+            "action" => "changeRole"
         ],
         "" => [
             "controller" => "StoreController",

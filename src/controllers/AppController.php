@@ -24,6 +24,16 @@ class AppController {
         }
     }
 
+    // Checks if the user is an Admin. If not, throws a 403 error.
+    protected function checkAdmin(): void {
+        $this->checkAuth(); // First, make sure you are logged in
+
+        if ($_SESSION['user_role'] !== 'ADMIN') {
+            http_response_code(403);
+            die("403 Forbidden: You do not have permission to access this page."); 
+        }
+    }
+
     // Render view template with optional variables
     protected function render(string $template = null, array $variables = []) {
         $templatePath = 'public/views/' . $template . '.html';
@@ -47,5 +57,20 @@ class AppController {
         
         // Output final rendered HTML
         echo $output;
+    }
+
+    // Avatar reading function
+    protected function getAvailableAvatars(): array {
+        $dir = __DIR__ . '/../../public/resources/avatars/';
+        $avatars = [];
+        if (is_dir($dir)) {
+            $files = scandir($dir);
+            foreach ($files as $file) {
+                if (in_array(strtolower(pathinfo($file, PATHINFO_EXTENSION)), ['jpg', 'jpeg', 'png', 'webp'])) {
+                    $avatars[] = $file;
+                }
+            }
+        }
+        return empty($avatars) ? ['gaming-console.png'] : $avatars;
     }
 }
