@@ -124,7 +124,7 @@ class Routing {
             // Fallback 404 page
             http_response_code(404);
             $title = "404 - Page Not Found";
-            include 'public/views/404.html';
+            include 'public/views/errors/404.html';
         }
     }
 }

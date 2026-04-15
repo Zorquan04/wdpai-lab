@@ -36,6 +36,11 @@ class DashboardController extends AppController {
         $this->checkAuth();
         
         if ($this->isPost()) {
+            // 400: Does the request really have a username and email?
+            if (!isset($_POST['username']) || !isset($_POST['email'])) {
+                $this->abort(400);
+            }
+
             $userId = $_SESSION['user_id'];
             
             $data = [

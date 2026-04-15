@@ -19,70 +19,10 @@ class AdminController extends AppController {
         $users = $this->userRepository->getAllUsers($_SESSION['user_id']);
         $games = $this->gameRepository->getGames();
         
-        return $this->render("admin", [
+        return $this->render("admins/admin", [
             "title" => "Admin Panel - GameNest",
             "users" => $users,
             "games" => $games
-        ]);
-    }
-
-    public function deleteUser() {
-        $this->checkAdmin();
-        
-        if ($this->isPost() && isset($_POST['user_id'])) {
-            $userIdToDelete = (int)$_POST['user_id'];
-            
-            // Security: Admin cannot delete himself
-            if ($userIdToDelete !== $_SESSION['user_id']) {
-                $this->userRepository->deleteUser($userIdToDelete);
-            }
-        }
-        header("Location: /admin");
-        exit();
-    }
-
-    public function changeRole() {
-        $this->checkAdmin();
-        
-        if ($this->isPost() && isset($_POST['user_id']) && isset($_POST['role'])) {
-            $userId = (int)$_POST['user_id'];
-            $newRole = $_POST['role'];
-            
-            // Security: Admin cannot change role to himself
-            if ($userId !== $_SESSION['user_id'] && in_array($newRole, ['USER', 'ADMIN'])) {
-                $this->userRepository->updateUserRole($userId, $newRole);
-            }
-        }
-        header("Location: /admin");
-        exit();
-    }
-
-    // Displaying the edit form for the selected user
-    public function editUser($id = null) {
-        $this->checkAdmin();
-        
-        if (!$id) {
-            header("Location: /admin");
-            exit();
-        }
-
-        // Fetch the data of the selected user from the repository
-        $user = $this->userRepository->getUserById((int)$id);
-        $userDetails = $this->userRepository->getUserDetails((int)$id);
-        
-        if (!$user) {
-            header("Location: /admin");
-            exit();
-        }
-
-        // Fetch the list of available avatars
-        $avatars = $this->getAvailableAvatars();
-
-        return $this->render("admin_user_form", [
-            "title" => "Edit User - GameNest",
-            "editedUser" => $user,
-            "details" => $userDetails,
-            "avatars" => $avatars
         ]);
     }
 
@@ -119,10 +59,70 @@ class AdminController extends AppController {
         exit();
     }
 
+    // Displaying the edit form for the selected user
+    public function editUser($id = null) {
+        $this->checkAdmin();
+        
+        if (!$id) {
+            header("Location: /admin");
+            exit();
+        }
+
+        // Fetch the data of the selected user from the repository
+        $user = $this->userRepository->getUserById((int)$id);
+        $userDetails = $this->userRepository->getUserDetails((int)$id);
+        
+        if (!$user) {
+            header("Location: /admin");
+            exit();
+        }
+
+        // Fetch the list of available avatars
+        $avatars = $this->getAvailableAvatars();
+
+        return $this->render("admins/admin_user_form", [
+            "title" => "Edit User - GameNest",
+            "editedUser" => $user,
+            "details" => $userDetails,
+            "avatars" => $avatars
+        ]);
+    }
+
+    public function changeRole() {
+        $this->checkAdmin();
+        
+        if ($this->isPost() && isset($_POST['user_id']) && isset($_POST['role'])) {
+            $userId = (int)$_POST['user_id'];
+            $newRole = $_POST['role'];
+            
+            // Security: Admin cannot change role to himself
+            if ($userId !== $_SESSION['user_id'] && in_array($newRole, ['USER', 'ADMIN'])) {
+                $this->userRepository->updateUserRole($userId, $newRole);
+            }
+        }
+        header("Location: /admin");
+        exit();
+    }
+
+    public function deleteUser() {
+        $this->checkAdmin();
+        
+        if ($this->isPost() && isset($_POST['user_id'])) {
+            $userIdToDelete = (int)$_POST['user_id'];
+            
+            // Security: Admin cannot delete himself
+            if ($userIdToDelete !== $_SESSION['user_id']) {
+                $this->userRepository->deleteUser($userIdToDelete);
+            }
+        }
+        header("Location: /admin");
+        exit();
+    }
+
     // Displays the empty form for a new game
     public function addGame() {
         $this->checkAdmin();
-        return $this->render("admin_game_form", [
+        return $this->render("admins/admin_game_form", [
             "title" => "Add New Game - GameNest",
             "game" => null // means the form will be empty
         ]);
@@ -136,7 +136,7 @@ class AdminController extends AppController {
         $game = $this->gameRepository->getGameById((int)$id);
         if (!$game) { header("Location: /admin"); exit(); }
 
-        return $this->render("admin_game_form", [
+        return $this->render("admins/admin_game_form", [
             "title" => "Edit Game - GameNest",
             "game" => $game // we pass the game object to the view
         ]);
@@ -147,6 +147,11 @@ class AdminController extends AppController {
         $this->checkAdmin();
         
         if ($this->isPost()) {
+            // 400: Does the request really have a title and price?
+            if (!isset($_POST['title']) || !isset($_POST['price'])) {
+                $this->abort(400); // Critical script termination and 400 error page
+            }
+
             // We collect text data
             $id = !empty($_POST['game_id']) ? (int)$_POST['game_id'] : null;
             $title = trim($_POST['title']);
@@ -155,22 +160,29 @@ class AdminController extends AppController {
             $price = (float)$_POST['price'];
             $specification = trim($_POST['specification']) ?: null;
             
+            // Validation: price cannot be negative
+            if ($price < 0) {
+                $_SESSION['error_message'] = "Price cannot be negative!";
+                // We determine where to move it back (for editing or for adding)
+                $redirectUrl = $id ? "/edit-game/$id" : "/add-game";
+                header("Location: " . $redirectUrl);
+                exit();
+            }
+
             // Graphics support
-            $graphics = $_POST['existing_graphics'] ?? 'default.jpg';
+            $graphics = !empty($_POST['existing_graphics']) ? trim($_POST['existing_graphics']) : 'default.jpg';
             
-            // We check if a new file has been uploaded and if there are no errors
             if (isset($_FILES['graphics']) && $_FILES['graphics']['error'] === UPLOAD_ERR_OK) {
                 $newGraphics = $this->handleFileUpload($_FILES['graphics']);
                 
-                // If a new file was uploaded and the old one was not the default - we delete the old one
+                // Security: is_file() makes sure we are deleting a file, not a folder
                 if ($graphics !== 'default.jpg' && $newGraphics !== 'default.jpg') {
                     $oldFilePath = __DIR__ . '/../../public/resources/covers/' . $graphics;
-                    if (file_exists($oldFilePath)) {
-                        unlink($oldFilePath); // physically delete the file
+                    if (is_file($oldFilePath)) { 
+                        unlink($oldFilePath); 
                     }
                 }
-
-                $graphics = $newGraphics; // replace the name with the new one
+                $graphics = $newGraphics;
             }
 
             // We create an object (the average rating at the start is 0.0, the trigger in the database will overwrite it if necessary)

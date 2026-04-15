@@ -1,92 +1,86 @@
-// Select hamburger menu icon (mobile navigation button)
-const menuIcon = document.querySelector(".display-mobile.fa-bars");
+document.addEventListener('DOMContentLoaded', () => {
+    // Auto-hide notifications after 5 seconds
+    const alerts = document.querySelectorAll('.alert');
+    alerts.forEach(alert => {
+        setTimeout(() => {
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        }, 5000);
+    });
 
-// Select navigation list inside navbar
-const navList = document.querySelector("nav > div.container > ul");
+    // Mobile menu
+    const menuIcon = document.querySelector(".display-mobile.fa-bars");
+    const navList = document.querySelector("nav > div.container > ul");
 
-// Toggle navigation visibility on click
-menuIcon.addEventListener("click", () => {
-
-  // Check current display state
-  if (navList.style.display === "block") {
-    navList.style.display = "none"; // Hide menu
-  } else {
-    navList.style.display = "block"; // Show menu
-  }
+    // Only execute if both elements actually exist on the page
+    if (menuIcon && navList) {
+        menuIcon.addEventListener("click", () => {
+            if (navList.style.display === "block") {
+                navList.style.display = "none";
+            } else {
+                navList.style.display = "block";
+            }
+        });
+    }
 });
 
-// Function to handle game purchase
+// Global functions called by onclick in HTML
+
 function buyGame(gameId) {
-    // Button responsible for purchasing (we block it to prevent the user from spamming clicks)
     const button = document.getElementById('buy-button');
-    
-    // Place for user messages (e.g., success / error)
     const messageSpan = document.getElementById('response-message');
     
-    // Block the button to prevent multiple submissions
+    // Protection against error if the script does not find the button
+    if (!button || !messageSpan) return;
+
     button.disabled = true;
     button.innerText = "Processing...";
 
-    // Send request to backend for game purchase
     fetch('/buy', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        // Pass the game ID to the backend
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ gameId: gameId })
     })
     .then(response => response.json())
     .then(data => {
-        // If backend returns success
         if (data.success) {
-            // Update UI - button disabled and text changed
             button.classList.add('btn-disabled');
             button.innerText = "In Library";
-
-            // Inform user of success
             messageSpan.className = "msg-success";
             messageSpan.innerText = "Added successfully!";
         } else {
-            // If something went wrong on the backend logic side
             button.disabled = false;
             button.innerText = "Add to Library";
-
-            // Display error returned by API or fallback
             messageSpan.className = "msg-error";
             messageSpan.innerText = data.error || "An error occurred";
         }
     })
     .catch(error => {
-        // Handle network errors (no connection, timeout etc.)
         console.error("Error:", error);
-
-        // Restore the button to its usable state
         button.disabled = false;
         button.innerText = "Add to Library";
-
-        // Inform user of network issue
         messageSpan.className = "msg-error";
         messageSpan.innerText = "Connection error";
     });
 }
 
-// Revealing the profile edit form
 function toggleEditMode() {
-    document.getElementById('profile-view').classList.toggle('hidden');
-    document.getElementById('profile-edit').classList.toggle('hidden');
+    const view = document.getElementById('profile-view');
+    const edit = document.getElementById('profile-edit');
+    if (view && edit) {
+        view.classList.toggle('hidden');
+        edit.classList.toggle('hidden');
+    }
 }
 
-// Choosing an avatar in the form
 function selectAvatar(filename) {
-    // Deselect all
     document.querySelectorAll('.avatar-option').forEach(img => {
         img.classList.remove('selected');
     });
-    // Select clicked (search by src attribute)
+    
     const selectedImg = document.querySelector(`.avatar-option[src="/public/resources/avatars/${filename}"]`);
     if(selectedImg) selectedImg.classList.add('selected');
     
-    // Update the hidden input for PHP
-    document.getElementById('avatar-input').value = filename;
+    const avatarInput = document.getElementById('avatar-input');
+    if(avatarInput) avatarInput.value = filename;
 }

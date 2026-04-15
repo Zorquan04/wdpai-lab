@@ -51,31 +51,6 @@ class GameController extends AppController {
         ]);
     }
 
-    // Classic review submission form
-    public function addReview() {
-        $this->checkAuth();
-
-        if (!$this->isPost()) {
-            header("Location: /");
-            exit();
-        }
-
-        $gameId = (int)$_POST['game_id'];
-        $rating = (int)$_POST['rating'];
-        $content = trim($_POST['content']);
-        $userId = $_SESSION['user_id'];
-
-        // Validation: whether the rating is 1-5, whether the player owns the game and whether they haven't rated it yet
-        if ($rating >= 1 && $rating <= 5 && $this->libraryRepository->isGameOwned($userId, $gameId) && !$this->reviewRepository->hasUserReviewed($userId, $gameId)) {
-            $review = new Review($userId, $gameId, $rating, $content);
-            $this->reviewRepository->addReview($review);
-        }
-
-        // Redirection back to the game page
-        header("Location: /game/" . $gameId);
-        exit();
-    }
-
     // Endpoint for Fetch API (asynchronous addition to library)
     public function buy() {
         $this->checkAuth(); // Extra security: prevent purchases by unauthenticated users
@@ -114,5 +89,30 @@ class GameController extends AppController {
             http_response_code(500); // Internal Server Error
             echo json_encode(['error' => 'Server error while processing your request']);
         }
+    }
+
+    // Classic review submission form
+    public function addReview() {
+        $this->checkAuth();
+
+        if (!$this->isPost()) {
+            header("Location: /");
+            exit();
+        }
+
+        $gameId = (int)$_POST['game_id'];
+        $rating = (int)$_POST['rating'];
+        $content = trim($_POST['content']);
+        $userId = $_SESSION['user_id'];
+
+        // Validation: whether the rating is 1-5, whether the player owns the game and whether they haven't rated it yet
+        if ($rating >= 1 && $rating <= 5 && $this->libraryRepository->isGameOwned($userId, $gameId) && !$this->reviewRepository->hasUserReviewed($userId, $gameId)) {
+            $review = new Review($userId, $gameId, $rating, $content);
+            $this->reviewRepository->addReview($review);
+        }
+
+        // Redirection back to the game page
+        header("Location: /game/" . $gameId);
+        exit();
     }
 }

@@ -15,7 +15,7 @@ class StoreController extends AppController {
         $games = $this->gameRepository->getGames();
 
         // We are passing them to the view
-        return $this->render("index", [
+        return $this->render("store", [
             "title" => "Store - GameNest",
             "games" => $games
         ]);

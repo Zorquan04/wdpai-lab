@@ -1,11 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <?php include __DIR__ . '/partials/head.html'; ?>
+    <?php include __DIR__ . '/../partials/head.html'; ?>
     <title><?= $title; ?></title>
   </head>
   <body>
-    <?php include __DIR__ . '/partials/nav.html'; ?>
+    <?php include __DIR__ . '/../partials/nav.html'; ?>
     
     <div class="container layout">
       <section class="profile-section" style="flex-direction: column; align-items: flex-start; max-width: 800px; margin: 40px auto; width: 100%;">
@@ -15,7 +15,6 @@
         </div>
         
         <form action="/save-game" method="POST" enctype="multipart/form-data" class="clean-form" style="width: 100%;">
-            
             <input type="hidden" name="game_id" value="<?= $game ? $game->getId() : '' ?>">
             <input type="hidden" name="existing_graphics" value="<?= $game ? htmlspecialchars($game->getGraphics()) : '' ?>">
 

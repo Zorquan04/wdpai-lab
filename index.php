@@ -14,5 +14,5 @@ try {
     // We catch all unhandled exceptions in the application
     http_response_code(500);
     $title = "500 - Internal Server Error";
-    include 'public/views/500.html';
+    include 'public/views/errors/500.html';
 }

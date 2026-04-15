@@ -1,0 +1,21 @@
+/* Base - Dark theme */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+h1, h2, h3 {
+    color: #00fc69;
+    font-weight: 700;
+}
+
+a {
+    color: #00fc69;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}

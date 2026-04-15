@@ -33,7 +33,9 @@ class SecurityController extends AppController {
 
         // Verification: does the user exist and does the password match the hash in the database?
         if (!$user || !password_verify($password, $user->getPassword())) {
-            return $this->render('login', ['messages' => ['Invalid email or password!']]);
+            $_SESSION['error_message'] = "Invalid credentials!";
+            header("Location: /login");
+            exit();
         }
 
         // Protection against Session Fixation
@@ -68,10 +70,13 @@ class SecurityController extends AppController {
         
         try {
             $this->userRepository->addUser($user);
-            return $this->render('login', ['messages' => ['Account created! You can now log in.']]);
-        } catch (PDOException $e) {
-            // Capturing a duplicate error from the database (e.g., email already exists)
-            return $this->render('register', ['messages' => ['Username or email already exists!']]);
+            $_SESSION['success_message'] = "Account created! You can now log in.";
+            header("Location: /login");
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['error_message'] = "Email or username already exists!";
+            header("Location: /register");
+            exit();
         }
     }
 

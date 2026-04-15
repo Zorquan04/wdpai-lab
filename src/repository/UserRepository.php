@@ -32,46 +32,6 @@ class UserRepository extends Repository {
         );
     }
 
-    // Inserts a new user into the database and creates an empty profile using Transactions
-    public function addUser(User $user): void {
-        try {
-            // The database is now "waiting" for final approval
-            $this->database->beginTransaction();
-
-            // Add the user to the main table by using RETURNING id - immediately returns the ID of the newly added record
-            $stmtUser = $this->database->prepare('
-                INSERT INTO users (username, email, password_hash, role)
-                VALUES (?, ?, ?, ?) RETURNING id
-            ');
-
-            $stmtUser->execute([
-                $user->getUsername(),
-                $user->getEmail(),
-                $user->getPassword(),
-                $user->getRole()
-            ]);
-
-            // We extract the ID of the created user
-            $userId = $stmtUser->fetchColumn();
-
-            // We create a related, empty profile for it in user_details
-            $stmtDetails = $this->database->prepare('
-                INSERT INTO user_details (user_id) VALUES (?)
-            ');
-            $stmtDetails->execute([$userId]);
-
-            // If we've reached this point, it means both queries were successful! We're committing the changes to the database
-            $this->database->commit();
-
-        } catch (PDOException $e) {
-            // We are rolling back all changes from this transaction to maintain 3NF consistency
-            $this->database->rollBack();
-            
-            // We throw an error above so that our SecurityController can display a message in the form
-            throw $e; 
-        }
-    }
-
     // Retrieves user profile details (name, bio, avatar) from user_details table
     public function getUserDetails(int $userId): ?array {
         $stmt = $this->database->prepare('
@@ -123,10 +83,44 @@ class UserRepository extends Repository {
         );
     }
 
-    public function deleteUser(int $id): void {
-        $stmt = $this->database->prepare('DELETE FROM users WHERE id = :id');
-        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-        $stmt->execute();
+    // Inserts a new user into the database and creates an empty profile using Transactions
+    public function addUser(User $user): void {
+        try {
+            // The database is now "waiting" for final approval
+            $this->database->beginTransaction();
+
+            // Add the user to the main table by using RETURNING id - immediately returns the ID of the newly added record
+            $stmtUser = $this->database->prepare('
+                INSERT INTO users (username, email, password_hash, role)
+                VALUES (?, ?, ?, ?) RETURNING id
+            ');
+
+            $stmtUser->execute([
+                $user->getUsername(),
+                $user->getEmail(),
+                $user->getPassword(),
+                $user->getRole()
+            ]);
+
+            // We extract the ID of the created user
+            $userId = $stmtUser->fetchColumn();
+
+            // We create a related, empty profile for it in user_details
+            $stmtDetails = $this->database->prepare('
+                INSERT INTO user_details (user_id) VALUES (?)
+            ');
+            $stmtDetails->execute([$userId]);
+
+            // If we've reached this point, it means both queries were successful! We're committing the changes to the database
+            $this->database->commit();
+
+        } catch (PDOException $e) {
+            // We are rolling back all changes from this transaction to maintain 3NF consistency
+            $this->database->rollBack();
+            
+            // We throw an error above so that our SecurityController can display a message in the form
+            throw $e; 
+        }
     }
 
     public function updateUserRole(int $id, string $role): void {
@@ -175,5 +169,11 @@ class UserRepository extends Repository {
             $this->database->rollBack();
             throw $e;
         }
+    }
+
+    public function deleteUser(int $id): void {
+        $stmt = $this->database->prepare('DELETE FROM users WHERE id = :id');
+        $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
     }
 }

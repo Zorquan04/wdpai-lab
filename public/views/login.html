@@ -5,14 +5,9 @@
     <title>GameNest - Login</title>
   </head>
   <body>
+    <?php include __DIR__ . '/partials/messages.html'; ?>
     <div class="container">
         <h1>LOGIN</h1>
-        
-        <?php if(isset($messages)): ?>
-            <?php foreach($messages as $message): ?>
-                <div style="color: red;"><?= $message ?></div>
-            <?php endforeach; ?>
-        <?php endif; ?>
 
         <form action="/login" method="POST">
             <input type="email" name="email" placeholder="example@gmail.com" required>

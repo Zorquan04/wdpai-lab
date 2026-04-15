@@ -31,9 +31,16 @@ class AppController {
 
         if ($_SESSION['user_role'] !== 'ADMIN') {
             http_response_code(403);
-            $this->render('403', ['title' => '403 Forbidden']);
+            $this->render('errors/403', ['title' => '403 Forbidden']);
             exit();
         }
+    }
+
+    // Stops the application and renders an error page (e.g. 400, 404, 500)
+    protected function abort(int $code) {
+        http_response_code($code);
+        $this->render("errors/$code", ['title' => "$code - Error"]);
+        exit(); // Critical script termination
     }
 
     // Render view template with optional variables
