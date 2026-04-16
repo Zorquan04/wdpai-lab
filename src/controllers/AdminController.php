@@ -17,7 +17,7 @@ class AdminController extends AppController {
         $this->checkAdmin(); // Ensure only admins can access this page
         
         $users = $this->userRepository->getAllUsers($_SESSION['user_id']);
-        $games = $this->gameRepository->getGames();
+        $games = $this->gameRepository->getGameStatistics();
         
         return $this->render("admins/admin", [
             "title" => "Admin Panel - GameNest",

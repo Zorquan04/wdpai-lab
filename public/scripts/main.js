@@ -48,6 +48,17 @@ function buyGame(gameId) {
             button.innerText = "In Library";
             messageSpan.className = "msg-success";
             messageSpan.innerText = "Added successfully!";
+            
+            // Review Form Disclosure
+            const mustOwnMsg = document.getElementById('must-own-msg');
+            const hiddenReviewForm = document.getElementById('hidden-review-form');
+            
+            if (mustOwnMsg && hiddenReviewForm) {
+                // We turn off the text, turn on the form (with smooth transition)
+                mustOwnMsg.style.display = 'none';
+                hiddenReviewForm.style.display = 'block';
+                hiddenReviewForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
         } else {
             button.disabled = false;
             button.innerText = "Add to Library";

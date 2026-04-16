@@ -20,16 +20,21 @@ class LibraryRepository extends Repository {
 
     // Checks if a user already owns a specific game.
     public function isGameOwned(int $userId, int $gameId): bool {
-        $stmt = $this->database->prepare('SELECT 1 FROM library WHERE user_id = :userId AND game_id = :gameId');
-        $stmt->execute(['userId' => $userId, 'gameId' => $gameId]);
-        
-        return (bool)$stmt->fetch();
-    }
+    $stmt = $this->database->prepare('
+        SELECT 1 FROM user_library 
+        WHERE user_id = :userId AND game_id = :gameId
+    ');
+    $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+    $stmt->bindParam(':gameId', $gameId, PDO::PARAM_INT);
+    $stmt->execute();
+
+    return $stmt->fetch() !== false;
+}
 
     // Adds a game to the user's library.
     public function addToLibrary(int $userId, int $gameId): void {
         $stmt = $this->database->prepare('
-            INSERT INTO library (user_id, game_id) 
+            INSERT INTO user_library (user_id, game_id) 
             VALUES (:userId, :gameId)
         ');
         $stmt->execute(['userId' => $userId, 'gameId' => $gameId]);

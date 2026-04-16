@@ -76,7 +76,29 @@
                 <?php elseif($isOwned && $hasReviewed): ?>
                     <p class="review-box-msg">You have already reviewed this game. Thank you!</p>
                 <?php else: ?>
-                    <p class="review-box-msg text-muted">You must own this game in your Library to leave a review.</p>
+                    <p id="must-own-msg" class="review-box-msg text-muted">You must own this game in your Library to leave a review.</p>
+                    
+                    <div id="hidden-review-form" class="review-form-box" style="display: none;">
+                        <h3>Leave a Review</h3>
+                        <form action="/add-review" method="POST" class="clean-form">
+                            <input type="hidden" name="game_id" value="<?= $game->getId() ?>">
+                            <div class="form-group">
+                                <label class="form-label">Rating (1-5):</label>
+                                <select name="rating" required class="form-input">
+                                    <option value="5">⭐⭐⭐⭐⭐ - Masterpiece</option>
+                                    <option value="4">⭐⭐⭐⭐ - Great</option>
+                                    <option value="3">⭐⭐⭐ - Good</option>
+                                    <option value="2">⭐⭐ - Poor</option>
+                                    <option value="1">⭐ - Terrible</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Comment:</label>
+                                <textarea name="content" required rows="4" class="form-input"></textarea>
+                            </div>
+                            <button type="submit">Submit Review</button>
+                        </form>
+                    </div>
                 <?php endif; ?>
             <?php else: ?>
                 <p class="review-box-msg text-muted"><a href="/login">Log in</a> and purchase the game to leave a review.</p>

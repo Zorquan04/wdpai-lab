@@ -7,11 +7,17 @@ require_once __DIR__ . '/../models/Game.php';
 class GameRepository extends Repository {
     // Retrieves all games from the database
     public function getGames(): array {
-        $result = [];
-        
-        $stmt = $this->database->prepare('SELECT * FROM games ORDER BY created_at DESC');
+        $stmt = $this->database->prepare('
+            SELECT g.id, g.title, g.description, g.category, g.price, g.graphics, g.specification, 
+                   v.calculated_rating AS average_rating
+            FROM games g
+            LEFT JOIN v_game_statistics v ON g.id = v.game_id
+            ORDER BY g.title ASC
+        ');
         $stmt->execute();
+
         $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = [];
 
         foreach ($games as $game) {
             $result[] = new Game(
@@ -19,7 +25,7 @@ class GameRepository extends Repository {
                 $game['title'],
                 $game['description'],
                 $game['category'],
-                (float)$game['price'],
+                $game['price'],
                 $game['graphics'],
                 (float)$game['average_rating'],
                 $game['specification']
@@ -31,7 +37,12 @@ class GameRepository extends Repository {
 
     // Retrieves a single game by its ID.
     public function getGameById(int $id): ?Game {
-        $stmt = $this->database->prepare('SELECT * FROM games WHERE id = :id');
+        $stmt = $this->database->prepare('
+            SELECT g.*, v.calculated_rating AS average_rating 
+            FROM games g 
+            LEFT JOIN v_game_statistics v ON g.id = v.game_id 
+            WHERE g.id = :id
+        ');
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
         
@@ -48,9 +59,21 @@ class GameRepository extends Repository {
             $game['category'],
             (float)$game['price'],
             $game['graphics'],
-            (float)$game['average_rating'],
+            (float)($game['average_rating'] ?? 0),
             $game['specification']
         );
+    }
+
+    // Retrieves game statistics from the v_game_statistics view
+    public function getGameStatistics(): array {
+        $stmt = $this->database->prepare('
+            SELECT game_id, title, price, total_reviews, calculated_rating 
+            FROM v_game_statistics 
+            ORDER BY total_reviews DESC
+        ');
+
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Adds a new game to the database

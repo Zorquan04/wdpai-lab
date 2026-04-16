@@ -73,8 +73,8 @@
                         <tr>
                             <th>ID</th>
                             <th>Title</th>
-                            <th>Category</th>
                             <th>Price</th>
+                            <th>Reviews</th>
                             <th>Rating</th>
                             <th>Actions</th>
                         </tr>
@@ -82,17 +82,22 @@
                     <tbody>
                         <?php foreach($games as $game): ?>
                             <tr>
-                                <td><?= $game->getId() ?></td>
-                                <td><strong><?= htmlspecialchars($game->getTitle()) ?></strong></td>
-                                <td><?= htmlspecialchars($game->getCategory()) ?></td>
-                                <td><?= number_format($game->getPrice(), 2) ?> PLN</td>
-                                <td><?= number_format($game->getAverageRating(), 2) ?> ⭐</td>
+                                <td><?= $game['game_id'] ?></td>
+                                <td><strong><?= htmlspecialchars($game['title']) ?></strong></td>
+                                <td><?= number_format($game['price'], 2) ?> PLN</td>
+                                
+                                <td style="text-align: center;">
+                                    <span style="color: #00fc69; font-weight: bold;"><?= $game['total_reviews'] ?></span> reviews
+                                </td>
+                                
+                                <td><?= number_format($game['calculated_rating'], 2) ?> ⭐</td>
+                                
                                 <td>
                                     <div style="display: flex; gap: 10px; align-items: center;">
-                                        <a href="/edit-game/<?= $game->getId() ?>" class="btn-outline admin-action-element" style="text-decoration: none;"><i class="fa-solid fa-pen" style="margin-right: 5px;"></i> Edit</a>
+                                        <a href="/edit-game/<?= $game['game_id'] ?>" class="btn-outline admin-action-element" style="text-decoration: none;"><i class="fa-solid fa-pen" style="margin-right: 5px;"></i> Edit</a>
                                         
                                         <form action="/delete-game" method="POST" class="action-form" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this game? All users will lose it from their libraries!');">
-                                            <input type="hidden" name="game_id" value="<?= $game->getId() ?>">
+                                            <input type="hidden" name="game_id" value="<?= $game['game_id'] ?>">
                                             <button type="submit" class="btn-danger admin-action-element" style="border: none;"><i class="fa-solid fa-trash" style="margin-right: 5px;"></i> Delete</button>
                                         </form>
                                     </div>

@@ -19,9 +19,16 @@
                     <?php if($role === 'ADMIN'): ?><span class="profile-badge">ADMIN</span><?php endif; ?>
                 </h1>
                 
-                <?php if(!empty($details['name']) || !empty($details['bio'])): ?>
-                    <p class="text-muted" style="margin-top: 10px;"><strong>Name:</strong> <?= htmlspecialchars(($details['name'] ?? '') . ' ' . ($details['surname'] ?? '')) ?></p>
-                    <p class="text-muted">"<?= htmlspecialchars($details['bio'] ?? '') ?>"</p>
+                <?php if(!empty($details['name']) || !empty($details['surname']) || !empty($details['bio'])): ?>
+                    
+                    <?php if(!empty($details['name']) || !empty($details['surname'])): ?>
+                        <p class="text-muted" style="margin-top: 10px;"><strong>Name:</strong> <?= htmlspecialchars(trim(($details['name'] ?? '') . ' ' . ($details['surname'] ?? ''))) ?></p>
+                    <?php endif; ?>
+
+                    <?php if(!empty($details['bio'])): ?>
+                        <p class="text-muted" style="margin-top: 5px;">"<?= htmlspecialchars($details['bio']) ?>"</p>
+                    <?php endif; ?>
+
                 <?php else: ?>
                     <p class="text-muted" style="margin-top: 10px;">Welcome! Click 'Edit Profile' to set up your account.</p>
                 <?php endif; ?>

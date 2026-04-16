@@ -1,130 +1,125 @@
--- Cleaning the database (for easier testing)
+-- Cleaning the database
+DROP VIEW IF EXISTS v_game_statistics;
+DROP VIEW IF EXISTS v_user_library_details;
+DROP TRIGGER IF EXISTS after_user_delete ON users;
+DROP FUNCTION IF EXISTS log_user_deletion;
+DROP TABLE IF EXISTS audit_log CASCADE;
+DROP TABLE IF EXISTS user_library CASCADE;
 DROP TABLE IF EXISTS reviews CASCADE;
-DROP TABLE IF EXISTS library CASCADE;
-DROP TABLE IF EXISTS user_details CASCADE;
 DROP TABLE IF EXISTS games CASCADE;
+DROP TABLE IF EXISTS user_details CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- Creating tables (entities) with relationships and constraints
+-- 1. BASE TABLES
 
--- Login and Role Table
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(255) NOT NULL UNIQUE,
+    email VARCHAR(255) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
     role VARCHAR(20) DEFAULT 'USER' CHECK (role IN ('USER', 'ADMIN')),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Profile Details Table (1:1 relationship with users)
 CREATE TABLE user_details (
     user_id INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
-    name VARCHAR(100),
-    surname VARCHAR(100),
+    name VARCHAR(50),
+    surname VARCHAR(50),
     bio TEXT,
-    avatar VARCHAR(255) DEFAULT 'gaming-console.png', -- path to predefined avatar
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    avatar VARCHAR(255) DEFAULT 'gaming-console.png'
 );
 
--- Games Table
 CREATE TABLE games (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL UNIQUE,
+    title VARCHAR(100) UNIQUE NOT NULL,
     description TEXT NOT NULL,
-    category VARCHAR(100) NOT NULL, -- e.g., RPG, FPS
-    price NUMERIC(10, 2) NOT NULL, -- NUMERIC perfect for currencies
-    release_date DATE,
-    specification TEXT, -- system requirements
-    graphics VARCHAR(255), -- path to thumbnail/box art
-    average_rating NUMERIC(3, 2) DEFAULT 0.00, -- updated by Trigger
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+    category VARCHAR(50) NOT NULL,
+    price NUMERIC(10, 2) NOT NULL CHECK (price >= 0),
+    graphics VARCHAR(255) DEFAULT 'default.jpg',
+    specification TEXT
 );
 
--- Player Library Table (M:N relationship between users and games)
-CREATE TABLE library (
-    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-    game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
-    purchased_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, game_id) -- composite primary key (prevents duplicates)
-);
-
--- Review table (1:N ratio with users and games)
 CREATE TABLE reviews (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
     game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
-    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5), -- scale 1-5
-    content TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, game_id) -- User can only add one review per game
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    content TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, game_id) -- the user can only rate the game once
 );
 
--- Functions and Triggers
+CREATE TABLE user_library (
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    game_id INTEGER REFERENCES games(id) ON DELETE CASCADE,
+    purchased_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, game_id)
+);
 
--- Function calculating and updating the average rating of a game
-CREATE OR REPLACE FUNCTION update_game_average_rating()
-RETURNS TRIGGER AS $$
-BEGIN
-    UPDATE games
-    SET average_rating = (
-        SELECT COALESCE(ROUND(AVG(rating)::numeric, 2), 0.00)
-        FROM reviews
-        WHERE game_id = COALESCE(NEW.game_id, OLD.game_id)
-    )
-    WHERE id = COALESCE(NEW.game_id, OLD.game_id);
+-- Table for saving logs by trigger
+CREATE TABLE audit_log (
+    id SERIAL PRIMARY KEY,
+    action VARCHAR(255) NOT NULL,
+    details TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-    RETURN NULL;
-END;
-$$ LANGUAGE plpgsql;
+-- 2. VIEWS
 
--- Trigger listening for changes in the reviews table
-CREATE TRIGGER trigger_update_rating
-AFTER INSERT OR UPDATE OR DELETE ON reviews
-FOR EACH ROW
-EXECUTE FUNCTION update_game_average_rating();
-
--- Views
-
--- User Library Details (Join of 3 tables)
--- For displaying on the user's profile under the "Library" tab
-CREATE OR REPLACE VIEW v_user_library_details AS
+-- View 1: Combines users, their library, and games
+CREATE VIEW v_user_library_details AS
 SELECT 
-    l.user_id,
+    ul.user_id,
     g.id AS game_id,
     g.title,
     g.category,
     g.graphics,
-    g.price,
-    l.purchased_at
-FROM library l
-JOIN games g ON l.game_id = g.id;
+    ul.purchased_at
+FROM user_library ul
+JOIN games g ON ul.game_id = g.id;
 
--- Game Statistics (Join of 2 tables)
--- For the store - shows the number of reviews and the average rating
-CREATE OR REPLACE VIEW v_game_statistics AS
+-- View 2: Dynamically calculates game statistics from reviews
+CREATE VIEW v_game_statistics AS
 SELECT 
     g.id AS game_id,
     g.title,
-    g.average_rating,
+    g.price,
     COUNT(r.id) AS total_reviews,
-    COALESCE(MAX(r.rating), 0) AS highest_rating,
-    COALESCE(MIN(r.rating), 0) AS lowest_rating
+    COALESCE(ROUND(AVG(r.rating), 2), 0.00) AS calculated_rating
 FROM games g
 LEFT JOIN reviews r ON g.id = r.game_id
-GROUP BY g.id, g.title, g.average_rating;
+GROUP BY g.id, g.title, g.price;
 
--- Sample data (mock data)
+-- 3. FUNCTIONS AND TRIGGERS
 
--- Start by adding an admin (the password is "admin123" hashed with the BCRYPT algorithm)
-INSERT INTO users (username, email, password_hash, role) 
-VALUES ('admin', 'admin@gmail.com', '$2y$10$il9iJULRoOJWqY4L9PmOGeL32WJnLdPYWjtWtS3KnxWBXxWK6dQnG', 'ADMIN');
+-- A function that logs the fact that a user has been deleted
+CREATE OR REPLACE FUNCTION log_user_deletion()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO audit_log (action, details)
+    VALUES ('USER_DELETED', 'User ' || OLD.username || ' (ID: ' || OLD.id || ') was removed from the system.');
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
 
-INSERT INTO user_details (user_id, name, surname, bio, avatar) 
-VALUES (1, 'Main', 'Administrator', 'I am the owner of GameNest', 'gaming-console.png');
+-- Trigger that fires after a user is deleted
+CREATE TRIGGER after_user_delete
+AFTER DELETE ON users
+FOR EACH ROW
+EXECUTE FUNCTION log_user_deletion();
 
--- A few games to start with
-INSERT INTO games (title, description, category, price, specification, graphics) VALUES 
-('CyberStrike 2077', 'Futuristic RPG game.', 'RPG', 199.99, 'CPU: i7, RAM: 16GB, GPU: RTX 3060', 'default.jpg'),
-('Witch Hunter 3', 'Epic fantasy game with an open world.', 'RPG', 99.50, 'CPU: i5, RAM: 8GB, GPU: GTX 1060', 'default.jpg'),
-('Space Marines', 'Futuristic FPS filled with action.', 'FPS', 120.00, 'CPU: i5, RAM: 8GB, GPU: GTX 1650', 'default.jpg');
+-- 4. SEEDING DATA
+
+-- THE PASSWORD IS: admin123 and user123 (hashed in BCRYPT)
+INSERT INTO users (email, password_hash, username, role) VALUES 
+('admin@gmail.com', '$2a$12$XLDJQF7Zcdeqx4P6UYavpuHB8dW3WNmuq8Phc8XlSKH5zoWTA39d6', 'admin', 'ADMIN'),
+('user@gmail.com', '$2a$12$jQAjb9Wm00kTeYHG3t5n.eqQ.gUeBDEZkk3na6rF1YNwVEESrasr.', 'user', 'USER');
+
+INSERT INTO user_details (user_id, name, surname, bio) VALUES 
+(1, 'System', 'Administrator', 'I rule this place ;D'),
+(2, 'Just', 'User', 'I love RPG games.');
+
+INSERT INTO games (title, description, category, price, graphics, specification) VALUES 
+('CyberStrike 2077', 'Futuristic RPG game.', 'RPG', 199.99, 'default.jpg', 'OS: Win 10, GPU: RTX 3060, CPU: i7-12700K, RAM: 16GB'),
+('Witch Hunter 3', 'Epic fantasy game with an open world.', 'RPG', 99.99, 'default.jpg', 'OS: Win 10, GPU: GTX 1060, CPU: i5-12400F, RAM: 8GB'),
+('Space Marines', 'Futuristic FPS filled with action.', 'Shooter', 119.99, 'default.jpg', 'OS: Win 10, GPU: RTX 2060, CPU: i5-12700K, RAM: 16GB');
