@@ -201,6 +201,13 @@ label {
     padding: 12px 15px; 
 }
 
+/* Webkit Autofill Override (White Tooltip Background Hack) */
+input:-webkit-autofill, input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-input) inset !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+}
+
 /* Padding alignment for file-type inputs */
 .form-input-file {
     padding: 9px 15px;

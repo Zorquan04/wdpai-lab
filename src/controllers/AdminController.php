@@ -40,7 +40,7 @@ class AdminController extends AppController {
                 'name' => trim($_POST['name'] ?? ''),
                 'surname' => trim($_POST['surname'] ?? ''),
                 'bio' => trim($_POST['bio'] ?? ''),
-                'avatar' => $_POST['avatar'] ?? 'gaming-console.png'
+                'avatar' => $_POST['avatar'] ?? 'gaming-console.jpg'
             ];
 
             try {

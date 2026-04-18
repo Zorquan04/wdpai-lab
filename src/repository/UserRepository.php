@@ -8,14 +8,12 @@ class UserRepository extends Repository {
     // Retrieves a user from the database by their email address
     public function getUser(string $email): ?User {
         // Prepare statement to prevent SQL Injection
-        $stmt = $this->database->prepare('
-            SELECT * FROM users WHERE email = :email
-        ');
+        $stmt = $this->database->prepare('SELECT * FROM users WHERE email = :email');
         $stmt->bindParam(':email', $email, PDO::PARAM_STR);
         $stmt->execute();
 
         // Fetch the result as an associative array
-        $user = $stmt->fetch();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Return null if user is not found
         if (!$user) {
@@ -160,7 +158,7 @@ class UserRepository extends Repository {
                 'name' => $data['name'],
                 'surname' => $data['surname'],
                 'bio' => $data['bio'],
-                'avatar' => $data['avatar'] ?? 'default.png',
+                'avatar' => $data['avatar'] ?? 'gaming-console.jpg',
                 'id' => $userId
             ]);
 

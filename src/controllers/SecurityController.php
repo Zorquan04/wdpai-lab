@@ -38,12 +38,17 @@ class SecurityController extends AppController {
             exit();
         }
 
+        // We retrieve user details with a separate query
+        $details = $this->userRepository->getUserDetails($user->getId());
+        $avatar = ($details && !empty($details['avatar'])) ? $details['avatar'] : 'gaming-console.jpg';
+
         // Protection against Session Fixation
         session_regenerate_id(true);
         
         $_SESSION['user_id'] = $user->getId();
         $_SESSION['user_role'] = $user->getRole();
         $_SESSION['username'] = $user->getUsername();
+        $_SESSION['user_avatar'] = $avatar;
 
         header("Location: /dashboard");
         exit();

@@ -98,11 +98,47 @@
     background-color: transparent;
     color: var(--error);
     border: 1px solid var(--error);
+    white-space: nowrap; 
+    overflow: hidden; 
+    animation: revealClearBtn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes revealClearBtn {
+    from { 
+        max-width: 0; 
+        padding-left: 0; 
+        padding-right: 0;
+        opacity: 0; 
+        transform: translateX(-15px); 
+    }
+    to { 
+        max-width: 100px;
+        padding-left: 16px; 
+        padding-right: 16px;
+        opacity: 1; 
+        transform: translateX(0); 
+    }
 }
 
 .btn-clear:hover {
     background-color: var(--error);
     color: #fff;
+}
+
+.btn-clear.hiding {
+    animation: hideClearBtn 0.25s ease-in forwards;
+}
+
+@keyframes hideClearBtn {
+    from { 
+        max-width: 100px; padding-left: 16px; padding-right: 16px; 
+        opacity: 1; transform: translateX(0); 
+    }
+    to { 
+        max-width: 0; padding-left: 0; padding-right: 0; 
+        opacity: 0; transform: translateX(-15px); 
+        color: transparent; border-color: transparent;
+    }
 }
 
 /* Navbar Links */
@@ -172,6 +208,11 @@
     margin: 0 auto;
     padding: 40px;
     min-height: calc(100vh - 150px);
+    animation: pageSlideUp 0.85s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+    transform: translateY(40px);
+    will-change: transform, opacity;
+    backface-visibility: hidden;
 }
 
 /* Footer */

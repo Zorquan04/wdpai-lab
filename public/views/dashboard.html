@@ -16,7 +16,7 @@
             <div id="profile-view">
                 <div class="profile-card">
                     <div class="profile-info-row">
-                        <img src="/public/resources/avatars/<?= htmlspecialchars($details['avatar'] ?? 'gaming-console.png') ?>" alt="Avatar" class="profile-avatar-large">
+                        <img src="/public/resources/avatars/<?= htmlspecialchars($details['avatar'] ?? 'gaming-console.jpg') ?>" alt="Avatar" class="profile-avatar-large">
                         <div class="profile-text-content">
                             <h2 class="profile-name">
                                 <?php if(!empty($details['name']) || !empty($details['surname'])): ?>
@@ -55,11 +55,11 @@
                         <div class="edit-section">
                             <h3>Choose Avatar</h3>
                             <div class="avatar-grid">
-                                <input type="hidden" name="avatar" id="avatar-input" value="<?= htmlspecialchars($details['avatar'] ?? 'gaming-console.png') ?>">
+                                <input type="hidden" name="avatar" id="avatar-input" value="<?= htmlspecialchars($details['avatar'] ?? 'gaming-console.jpg') ?>">
                                 
                                 <?php foreach($avatars as $av): ?>
                                     <img src="/public/resources/avatars/<?= $av ?>" 
-                                         class="avatar-option <?= ($details['avatar'] ?? 'gaming-console.png') === $av ? 'selected' : '' ?>" 
+                                         class="avatar-option <?= ($details['avatar'] ?? 'gaming-console.jpg') === $av ? 'selected' : '' ?>" 
                                          onclick="selectAvatar('<?= $av ?>')" 
                                          alt="avatar option">
                                 <?php endforeach; ?>

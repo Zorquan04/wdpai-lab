@@ -26,7 +26,7 @@ CREATE TABLE user_details (
     name VARCHAR(50),
     surname VARCHAR(50),
     bio TEXT,
-    avatar VARCHAR(255) DEFAULT 'gaming-console.png'
+    avatar VARCHAR(255) DEFAULT 'gaming-console.jpg'
 );
 
 CREATE TABLE games (
@@ -115,9 +115,9 @@ INSERT INTO users (email, password_hash, username, role) VALUES
 ('admin@gmail.com', '$2a$12$XLDJQF7Zcdeqx4P6UYavpuHB8dW3WNmuq8Phc8XlSKH5zoWTA39d6', 'admin', 'ADMIN'),
 ('user@gmail.com', '$2a$12$jQAjb9Wm00kTeYHG3t5n.eqQ.gUeBDEZkk3na6rF1YNwVEESrasr.', 'user', 'USER');
 
-INSERT INTO user_details (user_id, name, surname, bio) VALUES 
-(1, 'System', 'Administrator', 'I rule this place ;D'),
-(2, 'Just', 'User', 'I love RPG games.');
+INSERT INTO user_details (user_id, name, surname, bio, avatar) VALUES 
+(1, 'System', 'Administrator', 'I rule this place ;D', 'gaming-guy.jpg'),
+(2, 'Just', 'User', 'I love RPG games.', 'gaming-girl.jpg');
 
 INSERT INTO games (title, description, category, price, graphics, specification) VALUES 
 ('CyberStrike 2077', 'Futuristic RPG game.', 'RPG', 199.99, 'cyber.jpg', 'OS: Win 10, GPU: RTX 3060, CPU: i7-12700K, RAM: 16GB'),

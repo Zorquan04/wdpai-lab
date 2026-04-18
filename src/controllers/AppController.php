@@ -80,6 +80,6 @@ class AppController {
                 }
             }
         }
-        return empty($avatars) ? ['gaming-console.png'] : $avatars;
+        return empty($avatars) ? ['gaming-console.jpg'] : $avatars;
     }
 }

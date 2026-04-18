@@ -46,6 +46,20 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    // 5. Smooth exit for Clear button
+    const clearBtn = document.querySelector('.btn-clear');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            clearBtn.classList.add('hiding');
+            
+            // Wait 400ms (until the animation ends) and only then redirect to the home page
+            setTimeout(() => {
+                window.location.href = clearBtn.href;
+            }, 250); 
+        });
+    }
 });
 
 // Global Functions (Called from HTML)
@@ -108,9 +122,23 @@ function buyGame(gameId) {
 function toggleEditMode() {
     const view = document.getElementById('profile-view');
     const edit = document.getElementById('profile-edit');
+    
     if (view && edit) {
-        view.classList.toggle('hidden');
-        edit.classList.toggle('hidden');
+        if (view.classList.contains('hidden')) {
+            // We return to the profile view
+            edit.classList.add('hidden');
+            edit.classList.remove('fade-in-card');
+            
+            view.classList.remove('hidden');
+            view.classList.add('fade-in-card');
+        } else {
+            // Let's move on to editing
+            view.classList.add('hidden');
+            view.classList.remove('fade-in-card');
+            
+            edit.classList.remove('hidden');
+            edit.classList.add('fade-in-card');
+        }
     }
 }
 
