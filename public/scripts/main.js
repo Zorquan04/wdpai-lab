@@ -19,19 +19,46 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 3. Load More Games (Store)
-    const loadMoreBtn = document.getElementById('load-more-btn');
-    if (loadMoreBtn) {
-        loadMoreBtn.addEventListener('click', () => {
-            const hiddenGames = document.querySelectorAll('.hidden-game');
-            hiddenGames.forEach((game, index) => {
-                game.classList.remove('hidden-game');
-                game.classList.add('fade-in-card');
-                game.style.animationDelay = `${index * 0.1}s`; 
+    // 3. Load More (Games or Reviews)
+    function setupLoadMore(buttonId, itemSelector, hiddenClass, chunkSize) {
+        const btn = document.getElementById(buttonId);
+        if (!btn) return;
+
+        btn.addEventListener('click', () => {
+            // We are only looking for those elements that are still hidden
+            const hiddenItems = document.querySelectorAll(`${itemSelector}.${hiddenClass}`);
+            
+            // We cut out only a specific chunk from them (e.g., the first 3 or 4)
+            const itemsToReveal = Array.from(hiddenItems).slice(0, chunkSize);
+            
+            itemsToReveal.forEach((item, index) => {
+                item.classList.remove(hiddenClass);
+                item.classList.add('fade-in-card');
+                item.style.animationDelay = `${index * 0.1}s`;
+                
+                // We remove the animation block after entering (so that :hover works again)
+                setTimeout(() => {
+                    item.classList.remove('fade-in-card');
+                    item.style.animationDelay = '';
+                }, (index * 100) + 800);
             });
-            loadMoreBtn.style.display = 'none';
+            
+            // If there are fewer or equal hidden elements then we've revealed everything. We hide the button
+            if (hiddenItems.length <= chunkSize) {
+                btn.style.display = 'none';
+            }
         });
     }
+
+    // Store: Discover 4 games at a time
+    setupLoadMore('load-more-btn', '.game-card', 'hidden-game', 4);
+    
+    // Game Details: Discover 3 reviews at a time
+    setupLoadMore('load-more-reviews-btn', '.review-card', 'hidden-review', 3);
+
+    // Admin: Users and Games (3 at a time)
+    setupLoadMore('load-more-users-btn', '.admin-table-row', 'hidden-admin-row', 3);
+    setupLoadMore('load-more-admin-games-btn', '.admin-table-row', 'hidden-admin-row', 3);
 
     // 4. Protection against files that are too large
     const fileInputs = document.querySelectorAll('input[type="file"]');
@@ -142,6 +169,18 @@ function toggleEditMode() {
             
             edit.classList.remove('hidden');
             edit.classList.add('fade-in-card');
+        }
+    }
+}
+
+function toggleDeleteForm() {
+    const view = document.getElementById('delete-account-view');
+    const form = document.getElementById('delete-account-form');
+    if (view && form) {
+        view.classList.toggle('hidden');
+        form.classList.toggle('hidden');
+        if(!form.classList.contains('hidden')) {
+            form.classList.add('fade-in-card');
         }
     }
 }

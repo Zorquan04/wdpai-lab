@@ -27,7 +27,10 @@
                             </h2>
                             <div class="profile-role">
                                 <i class="fa-solid fa-user-astronaut"></i> 
-                                <?= htmlspecialchars($role === 'ADMIN' ? 'Administrator' : 'Verified Member') ?>
+                                <?= htmlspecialchars($role === 'ADMIN' ? 'Administrator' : 'Verified Member') ?> 
+                                <span>
+                                    since <?= date('F Y', strtotime($createdAt)) ?>
+                                </span>
                             </div>
                             <?php if(!empty($details['bio'])): ?>
                                 <p class="profile-bio">"<?= htmlspecialchars($details['bio']) ?>"</p>
@@ -109,8 +112,41 @@
                     </form>
                 </div>
             </div>
-
         </div>
+
+        <?php if ($role !== 'ADMIN'): ?>
+        <div class="danger-zone">
+            <div style="margin-bottom: 15px;">
+                <h2 style="color: var(--error); font-size: 1.2rem; margin-bottom: 5px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Danger Zone
+                </h2>
+                <p class="text-muted" style="font-size: 0.9rem;">Once you delete your account, there is no going back.</p>
+            </div>
+
+            <div id="delete-account-view">
+                <button type="button" onclick="toggleDeleteForm()" class="btn-danger" style="padding: 8px 16px; font-size: 0.9rem;">
+                    <i class="fa-solid fa-trash"></i> Delete Account
+                </button>
+            </div>
+
+            <div id="delete-account-form" class="hidden">
+                <form action="/delete-account" method="POST" class="clean-form">
+                    <p style="margin-bottom: 10px; color: var(--text-main); font-size: 0.95rem;">Please enter your password to confirm:</p>
+                    
+                    <div class="form-group">
+                        <input type="password" name="password" class="form-input" placeholder="Confirm password" required>
+                    </div>
+                    
+                    <div class="danger-zone-actions">
+                        <button type="submit" class="btn-danger-solid">
+                            <i class="fa-solid fa-skull btn-icon-margin"></i> Confirm Deletion
+                        </button>
+                        <button type="button" class="btn-outline" onclick="toggleDeleteForm()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <?php endif; ?>
     </main>
 
     <footer class="main-footer">

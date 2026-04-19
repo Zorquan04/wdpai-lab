@@ -146,7 +146,7 @@
 }
 
 /* Load More Button */
-.hidden-game {
+.hidden-game, .hidden-review, .hidden-admin-row {
     display: none !important;
 }
 

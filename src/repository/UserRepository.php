@@ -48,6 +48,16 @@ class UserRepository extends Repository {
         return $details;
     }
 
+    // Retrieves only the registration date for a specific user
+    public function getUserRegistrationDate(int $userId): ?string {
+        $stmt = $this->database->prepare('SELECT created_at FROM users WHERE id = :id');
+        $stmt->bindParam(':id', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $date = $stmt->fetchColumn();
+        return $date ? $date : null;
+    }
+
     public function getAllUsers(int $currentUserId): array {
         $stmt = $this->database->prepare('
             SELECT id, username, email, role, created_at 

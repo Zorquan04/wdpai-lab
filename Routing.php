@@ -34,6 +34,10 @@ class Routing {
             "controller" => "DashboardController", 
             "action" => "updateProfile"
         ],
+        "delete-account" => [
+            "controller" => "DashboardController",
+            "action" => "deleteAccount"
+        ],
         "library" => [
             "controller" => "LibraryController",
             "action" => "index"

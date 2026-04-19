@@ -15,6 +15,7 @@ class DashboardController extends AppController {
         $userId = $_SESSION['user_id'];
         
         $userDetails = $this->userRepository->getUserDetails($userId);
+        $createdAt = $this->userRepository->getUserRegistrationDate($userId);
         
         // Clean retrieval of user data from the Repository
         $mainUser = $this->userRepository->getUserById($userId);
@@ -28,6 +29,7 @@ class DashboardController extends AppController {
             "email" => $mainUser->getEmail(),
             "role" => $_SESSION['user_role'],
             "details" => $userDetails,
+            'createdAt' => $createdAt,
             "avatars" => $avatars
         ]);
     }
@@ -70,5 +72,53 @@ class DashboardController extends AppController {
         
         header("Location: /dashboard");
         exit();
+    }
+
+    public function deleteAccount() {
+        $this->checkAuth(); // Security: only for logged in users
+
+        if (!$this->isPost()) {
+            header("Location: /dashboard");
+            exit();
+        }
+
+        $password = $_POST['password'] ?? '';
+        $userId = $_SESSION['user_id'];
+        $userRole = $_SESSION['user_role'] ?? 'USER';
+
+        if ($userRole === 'ADMIN') {
+            $_SESSION['error_message'] = "Administrators cannot delete their own accounts for security reasons.";
+            header("Location: /dashboard");
+            exit();
+        }
+
+        // We retrieve user data from the database to check the password
+        $user = $this->userRepository->getUserById($userId);
+
+        if (!$user || !password_verify($password, $user->getPassword())) {
+            $_SESSION['error_message'] = "Incorrect password. Account deletion canceled.";
+            header("Location: /dashboard");
+            exit();
+        }
+
+        try {
+            // We delete the user (cascading in SQL will handle the rest of the tables)
+            $this->userRepository->deleteUser($userId);
+            
+            // We destroy the session and log the user out
+            session_unset();
+            session_destroy();
+
+            session_start();
+            $_SESSION['success_message'] = "Your account has been successfully deleted. We are sad to see you go!";
+
+            // We redirect to the main page with a message
+            header("Location: /?message=deleted");
+            exit();
+        } catch (Exception $e) {
+            $_SESSION['error_message'] = "Server error. Could not delete account.";
+            header("Location: /dashboard");
+            exit();
+        }
     }
 }
