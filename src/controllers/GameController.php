@@ -63,10 +63,10 @@ class GameController extends AppController {
 
     // Endpoint for Fetch API (asynchronous addition to library)
     public function buy() {
-        $this->checkAuth(); // Extra security: prevent purchases by unauthenticated users
+        $this->checkAuth(); // prevent purchases by unauthenticated users
 
         if (!$this->isPost()) {
-            http_response_code(405); // Method Not Allowed
+            http_response_code(405); // method not allowed
             return;
         }
 
@@ -75,7 +75,7 @@ class GameController extends AppController {
         $userId = $_SESSION['user_id'];
 
         if (!$gameId) {
-            http_response_code(400); // Bad Request
+            http_response_code(400); // bad request
             echo json_encode(['error' => 'Invalid game ID']);
             return;
         }
@@ -107,7 +107,7 @@ class GameController extends AppController {
             http_response_code(200);
             echo json_encode(['success' => true, 'message' => 'Game added to library!']);
         } catch (Exception $e) {
-            http_response_code(500); // Internal Server Error
+            http_response_code(500); // internal server error
             echo json_encode(['error' => 'Server error while processing your request']);
         }
     }

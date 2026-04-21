@@ -1,4 +1,4 @@
-/* Global Buttons */
+/* Base Buttons */
 button, .btn-primary, .btn-outline {
     display: inline-flex;
     align-items: center;
@@ -14,53 +14,49 @@ button, .btn-primary, .btn-outline {
     box-sizing: border-box;
 }
 
-.btn-primary { 
-    background-color: var(--primary); 
-    color: #000 !important; 
+/* Primary */
+.btn-primary {
+    background-color: var(--primary);
+    color: #000 !important;
 }
 
-.btn-primary:hover { 
-    background-color: var(--primary-hover); 
-    transform: translateY(-1px); 
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    transform: translateY(-1px);
 }
 
-.btn-outline { 
-    background-color: transparent; 
-    border: 1px solid var(--border-subtle); 
-    color: var(--text-main); 
+/* Outline */
+.btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--border-subtle);
+    color: var(--text-main);
 }
 
-.btn-outline:hover { 
-    background-color: var(--border-subtle); 
+.btn-outline:hover { background-color: var(--border-subtle); }
+
+/* Sizes */
+.btn-sm {
+    padding: 8px 16px;
+    font-size: 0.85rem;
 }
 
-.btn-sm { 
-    padding: 8px 16px; 
-    font-size: 0.85rem; 
-}
-
-.btn-block { 
-    width: 100%; 
-}
-
-/* Large button (e.g., saving changes) */
 .btn-lg {
     font-size: 1.1rem;
     padding: 15px;
 }
 
-/* Disabled button state */
+.btn-block { width: 100%; }
+
+/* States */
 .btn-disabled {
     background-color: var(--bg-input) !important;
     color: var(--text-muted) !important;
     cursor: not-allowed !important;
 }
 
-.btn-icon-margin {
-    margin-right: 8px;
-}
+.btn-icon-margin { margin-right: 8px; }
 
-/* Icon Buttons */
+/* Icon Button */
 .btn-icon {
     background-color: transparent;
     border: 1px solid var(--border-subtle);
@@ -76,36 +72,16 @@ button, .btn-primary, .btn-outline {
     padding: 0;
 }
 
-.btn-icon:hover {
-    background-color: var(--border-subtle);
-}
+.btn-icon:hover { background-color: var(--border-subtle); }
 
-/* Security Zone */
-.security-zone {
-    margin: 25px auto 0;
-    padding: 30px;
-    background: var(--bg-card);
-    border: 1px solid var(--border-subtle);
-    border-radius: 12px;
-    max-width: 840px;
-}
-
-.security-actions-nav {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-top: 20px;
-}
-
-/* Base Danger Button (Transparent) */
-button.btn-danger, .btn-danger { 
+/* Danger Buttons */
+button.btn-danger, .btn-danger {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background-color: transparent !important; 
+    background-color: transparent !important;
     border: 1px solid var(--error) !important;
-    color: var(--error) !important; 
+    color: var(--error) !important;
     border-radius: 8px !important;
     font-weight: 600 !important;
     cursor: pointer !important;
@@ -113,9 +89,9 @@ button.btn-danger, .btn-danger {
     text-decoration: none !important;
 }
 
-button.btn-danger:hover, .btn-danger:hover { 
-    background-color: var(--error) !important; 
-    color: #fff !important; 
+button.btn-danger:hover, .btn-danger:hover {
+    background-color: var(--error) !important;
+    color: #fff !important;
 }
 
 button.btn-danger i, .btn-danger i {
@@ -123,12 +99,12 @@ button.btn-danger i, .btn-danger i {
     margin-right: 5px;
 }
 
-/* Solid Danger Button */
+/* Solid Danger */
 .btn-danger-solid {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    background-color: var(--error) !important; 
+    background-color: var(--error) !important;
     color: #fff !important;
     border: none !important;
     border-radius: 8px !important;
@@ -143,7 +119,7 @@ button.btn-danger i, .btn-danger i {
     transform: translateY(-1px);
 }
 
-/* Wishlist Button */
+/* Wishlist */
 .btn-wishlist {
     background-color: transparent;
     border: 1px solid var(--border-subtle);
@@ -157,7 +133,6 @@ button.btn-danger i, .btn-danger i {
     color: var(--primary);
 }
 
-/* State when the game is already on the wishlist */
 .btn-wishlist.active {
     border-color: var(--primary);
     color: var(--primary);
@@ -168,11 +143,9 @@ button.btn-danger i, .btn-danger i {
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-wishlist:active i {
-    transform: scale(1.3);
-}
+.btn-wishlist:active i { transform: scale(1.3); }
 
-/* Review Like Button (Helpful) */
+/* Like Button */
 .btn-like {
     background: transparent;
     border: 1px solid var(--border-subtle);
@@ -194,7 +167,6 @@ button.btn-danger i, .btn-danger i {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* "Liked" status */
 .btn-like.active {
     color: var(--primary);
     border-color: var(--primary);
@@ -205,11 +177,27 @@ button.btn-danger i, .btn-danger i {
     transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-like:active i {
-    transform: scale(1.4);
+.btn-like:active i { transform: scale(1.4); }
+
+/* Security */
+.security-zone {
+    margin: 25px auto 0;
+    padding: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: 12px;
+    max-width: 840px;
 }
 
-/* Auth Page Layout */
+.security-actions-nav {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 20px;
+}
+
+/* Auth Layout */
 .auth-page-wrapper {
     display: flex;
     flex-direction: column;
@@ -229,49 +217,60 @@ button.btn-danger i, .btn-danger i {
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
 }
 
-.auth-card-header { 
-    text-align: center; 
-    margin-bottom: 30px; 
+.auth-card-header {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
-.auth-card-header h1 { 
-    font-size: 1.5rem; 
-    color: var(--text-main); 
-    margin-bottom: 8px; 
+.auth-card-header h1 {
+    font-size: 1.5rem;
+    color: var(--text-main);
+    margin-bottom: 8px;
 }
 
-.auth-card-header p { 
-    font-size: 0.9rem; 
-    color: var(--text-muted); 
-    margin: 0; 
+.auth-card-header p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
 }
 
-.auth-footer { 
-    margin-top: 40px; 
-    font-size: 0.75rem; 
-    color: #4a5568; 
-    text-align: center; 
+.auth-footer {
+    margin-top: 40px;
+    font-size: 0.75rem;
+    color: #4a5568;
+    text-align: center;
 }
 
-/* Forms and Inputs */
-form { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 20px; 
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.form-group { 
-    display: flex; 
-    flex-direction: column; 
-    gap: 8px; 
+form.table-action-form {
+    display: block;
+    background-color: transparent;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+    max-width: none;
+    border: none;
 }
 
-label { 
-    font-size: 0.85rem; 
-    color: var(--text-muted); 
-    font-weight: 500; 
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
+label {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* Inputs */
 .input-icon-wrapper {
     position: relative;
     display: flex;
@@ -297,82 +296,23 @@ label {
     box-sizing: border-box;
 }
 
-.input-icon-wrapper input { 
-    padding: 12px 15px 12px 40px; 
+.input-icon-wrapper input { padding: 12px 15px 12px 40px; }
+.form-input { padding: 12px 15px; }
+
+textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
 }
 
-.form-input { 
-    padding: 12px 15px; 
+.input-icon-wrapper input:focus, .form-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--border-focus);
 }
 
-/* System Specifications (Two Columns) */
-.specs-wrapper {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 40px;
-    margin-top: 20px;
-}
+.input-icon-wrapper input::placeholder, .form-input::placeholder { color: #4a5568; }
 
-@media (max-width: 768px) {
-    .specs-wrapper {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-}
-
-.specs-column h4 {
-    font-size: 0.85rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 15px;
-}
-
-.specs-column.min h4 { 
-    color: var(--primary); 
-}
-
-.specs-column.rec h4 { 
-    color: var(--primary); 
-}
-
-/* System Specifications Table */
-.specs-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.spec-row {
-    display: flex;
-    justify-content: flex-start;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    padding-bottom: 8px;
-    font-size: 0.9rem;
-}
-
-.spec-row:last-child { 
-    border-bottom: none; 
-}
-
-.spec-label { 
-    color: var(--text-muted); 
-    width: 80px; 
-    flex-shrink: 0; 
-}
-
-.spec-value { 
-    color: var(--text-main); 
-    font-weight: 500; 
-}
-
-/* Webkit Autofill Override (White Tooltip Background Hack) */
-input:-webkit-autofill, input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, input:-webkit-autofill:active {
-    -webkit-box-shadow: 0 0 0 30px var(--bg-input) inset !important;
-    -webkit-text-fill-color: var(--text-main) !important;
-}
-
-/* Custom file input styling */
+/* File input */
 .form-input-file {
     padding: 8px 12px;
     background-color: rgba(255, 255, 255, 0.03);
@@ -394,32 +334,65 @@ input:-webkit-autofill:focus, input:-webkit-autofill:active {
     margin-right: 15px;
 }
 
-.form-input-file::file-selector-button:hover {
-    filter: brightness(1.1);
+.form-input-file::file-selector-button:hover { filter: brightness(1.1); }
+
+/* Autofill */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-input) inset !important;
+    -webkit-text-fill-color: var(--text-main) !important;
 }
 
-.input-icon-wrapper input:focus, .form-input:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px var(--border-focus);
+/* Specs */
+.specs-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-top: 20px;
 }
 
-.input-icon-wrapper input::placeholder, .form-input::placeholder { 
-    color: #4a5568; 
+@media (max-width: 768px) {
+    .specs-wrapper {
+        grid-template-columns: 1fr;
+        gap: 30px;
+    }
 }
 
-textarea.form-input { 
-    resize: vertical; 
-    min-height: 100px; 
+.specs-column h4 {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px;
 }
 
-/* Table Action Forms (Reset)  */
-form.table-action-form {
-    display: block;
-    background-color: transparent;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-    max-width: none;
-    border: none;
+.specs-column.min h4 { color: var(--primary); }
+.specs-column.rec h4 { color: var(--primary); }
+
+.specs-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.spec-row {
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding-bottom: 8px;
+    font-size: 0.9rem;
+}
+
+.spec-row:last-child { border-bottom: none; }
+
+.spec-label {
+    color: var(--text-muted);
+    width: 80px;
+    flex-shrink: 0;
+}
+
+.spec-value {
+    color: var(--text-main);
+    font-weight: 500;
 }

@@ -10,7 +10,7 @@ DROP TABLE IF EXISTS games CASCADE;
 DROP TABLE IF EXISTS user_details CASCADE;
 DROP TABLE IF EXISTS users CASCADE;
 
--- 1. BASE TABLES
+-- BASE TABLES
 
 CREATE TABLE users (
     id SERIAL PRIMARY KEY,
@@ -38,7 +38,8 @@ CREATE TABLE games (
     graphics VARCHAR(255) DEFAULT 'default.jpg',
     specification TEXT,
     developer VARCHAR(255) DEFAULT 'Unknown Studio',
-    release_date DATE DEFAULT CURRENT_DATE
+    release_date DATE DEFAULT CURRENT_DATE,
+    is_featured BOOLEAN DEFAULT FALSE
 );
 
 CREATE TABLE reviews (
@@ -81,7 +82,7 @@ CREATE TABLE audit_log (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. VIEWS
+-- VIEWS
 
 -- View 1: Combines users, their library, and games
 CREATE VIEW v_user_library_details AS
@@ -107,7 +108,17 @@ FROM games g
 LEFT JOIN reviews r ON g.id = r.game_id
 GROUP BY g.id, g.title, g.price;
 
--- 3. FUNCTIONS AND TRIGGERS
+-- View 3: For automatically fetching the 4 newest released (and available) games
+CREATE OR REPLACE VIEW v_recommended_games AS
+SELECT g.id, g.title, g.description, g.category, g.price, g.graphics, g.specification, g.developer, g.release_date,
+       COALESCE(v.calculated_rating, 0.0) AS average_rating
+FROM games g
+LEFT JOIN v_game_statistics v ON g.id = v.game_id
+WHERE g.release_date <= CURRENT_DATE
+ORDER BY g.release_date DESC
+LIMIT 4;
+
+-- FUNCTIONS AND TRIGGERS
 
 -- A function that logs the fact that a user has been deleted
 CREATE OR REPLACE FUNCTION log_user_deletion()
@@ -125,7 +136,7 @@ AFTER DELETE ON users
 FOR EACH ROW
 EXECUTE FUNCTION log_user_deletion();
 
--- 4. SEEDING DATA
+-- SEEDING DATA
 
 -- THE PASSWORD IS: admin123 and user123 (hashed in BCRYPT)
 INSERT INTO users (email, password_hash, username, role) VALUES 
@@ -136,10 +147,10 @@ INSERT INTO user_details (user_id, name, surname, bio, avatar) VALUES
 (1, 'System', 'Administrator', 'I rule this place ;D', 'gaming-guy.jpg'),
 (2, 'Just', 'User', 'I love RPG games.', 'gaming-girl.jpg');
 
-INSERT INTO games (title, description, category, price, graphics, developer, release_date, specification) VALUES 
-('CyberStrike 2077', 'Futuristic RPG game.', 'RPG', 199.99, 'cyber.jpg', 'Nexus Studios', '2077-12-12', '{"minimum":{"os":"Win 10","cpu":"i7-12700K","gpu":"RTX 3060","ram":"16GB","storage":"100GB SSD"},"recommended":{"os":"Win 11","cpu":"i9-13900K","gpu":"RTX 4080","ram":"32GB","storage":"100GB NVMe"}}'),
-('Witch Hunter 3', 'Epic fantasy game with an open world.', 'RPG', 99.99, 'witch.jpg', 'Red Project', '2015-05-19', '{"minimum":{"os":"Win 10","cpu":"i5-12400F","gpu":"GTX 1060","ram":"8GB","storage":"50GB HDD"},"recommended":{"os":"Win 11","cpu":"i7-12700","gpu":"not specified","ram":"16GB","storage":"not specified"}}'),
-('Space Marines', 'Futuristic FPS filled with action.', 'Shooter', 0, 'space.jpg', 'Galaxy Games', '2025-10-01', '{"minimum":{"os":"Win 10","cpu":"i5-12700K","gpu":"RTX 2060","ram":"16GB","storage":"60GB SSD"},"recommended":{"os":"Win 11","cpu":"i7-13700K","gpu":"RTX 3080","ram":"32GB","storage":"60GB SSD"}}'),
-('Neon Racers', 'High-speed futuristic racing in neon cities.', 'Racing', 79.99, 'neon.jpg', 'Velocity Labs', '2026-03-15', '{"minimum":{"os":"Win 10","cpu":"i5-11400F","gpu":"GTX 1660","ram":"8GB","storage":"30GB SSD"},"recommended":{"os":"not specified","cpu":"not specified","gpu":"not specified","ram":"not specified","storage":"not specified"}}'),
-('Kingdoms Reborn', 'Strategy game about building and managing your empire.', 'Strategy', 89.99, 'kingdom.jpg', 'Empire Builders', '2023-11-20', '{"minimum":{"os":"Win 10","cpu":"i3-10100","gpu":"GTX 1050 Ti","ram":"not specified","storage":"20GB HDD"},"recommended":{"os":"Win 10","cpu":"i5-10400","gpu":"GTX 1660 Ti","ram":"16GB","storage":"20GB SSD"}}'),
-('Dark Survival', 'Horror survival game in a post-apocalyptic world.', 'Horror', 0, 'survival.jpg', 'Nightmare Studios', '2024-08-05', '{"minimum":{"os":"Win 10","cpu":"i5-10400F","gpu":"GTX 1650","ram":"8GB","storage":"40GB"},"recommended":{"os":"not specified","cpu":"not specified","gpu":"RTX 2070","ram":"16GB","storage":"40GB SSD"}}');
+INSERT INTO games (title, description, category, price, graphics, developer, release_date, specification, is_featured) VALUES 
+('CyberStrike 2077', 'Futuristic RPG game.', 'RPG', 199.99, 'cyber.jpg', 'Nexus Studios', '2077-12-12', '{"minimum":{"os":"Win 10","cpu":"i7-12700K","gpu":"RTX 3060","ram":"16GB","storage":"100GB SSD"},"recommended":{"os":"Win 11","cpu":"i9-13900K","gpu":"RTX 4080","ram":"32GB","storage":"100GB NVMe"}}', TRUE),
+('Witch Hunter 3', 'Epic fantasy game with an open world.', 'RPG', 99.99, 'witch.jpg', 'Red Project', '2015-05-19', '{"minimum":{"os":"Win 10","cpu":"i5-12400F","gpu":"GTX 1060","ram":"8GB","storage":"50GB HDD"},"recommended":{"os":"Win 11","cpu":"i7-12700","gpu":"not specified","ram":"16GB","storage":"not specified"}}', FALSE),
+('Space Marines', 'Futuristic FPS filled with action.', 'Shooter', 0, 'space.jpg', 'Galaxy Games', '2025-10-01', '{"minimum":{"os":"Win 10","cpu":"i5-12700K","gpu":"RTX 2060","ram":"16GB","storage":"60GB SSD"},"recommended":{"os":"Win 11","cpu":"i7-13700K","gpu":"RTX 3080","ram":"32GB","storage":"60GB SSD"}}', FALSE),
+('Neon Racers', 'High-speed futuristic racing in neon cities.', 'Racing', 79.99, 'neon.jpg', 'Velocity Labs', '2026-03-15', '{"minimum":{"os":"Win 10","cpu":"i5-11400F","gpu":"GTX 1660","ram":"8GB","storage":"30GB SSD"},"recommended":{"os":"not specified","cpu":"not specified","gpu":"not specified","ram":"not specified","storage":"not specified"}}', FALSE),
+('Kingdoms Reborn', 'Strategy game about building and managing your empire.', 'Strategy', 89.99, 'kingdom.jpg', 'Empire Builders', '2023-11-20', '{"minimum":{"os":"Win 10","cpu":"i3-10100","gpu":"GTX 1050 Ti","ram":"not specified","storage":"20GB HDD"},"recommended":{"os":"Win 10","cpu":"i5-10400","gpu":"GTX 1660 Ti","ram":"16GB","storage":"20GB SSD"}}', FALSE),
+('Dark Survival', 'Horror survival game in a post-apocalyptic world.', 'Horror', 0, 'survival.jpg', 'Nightmare Studios', '2024-08-05', '{"minimum":{"os":"Win 10","cpu":"i5-10400F","gpu":"GTX 1650","ram":"8GB","storage":"40GB"},"recommended":{"os":"not specified","cpu":"not specified","gpu":"RTX 2070","ram":"16GB","storage":"40GB SSD"}}', FALSE);

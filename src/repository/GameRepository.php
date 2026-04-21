@@ -16,7 +16,6 @@ class GameRepository extends Repository {
 
         // If a search string is provided, add a condition to the SQL
         if ($searchString) {
-            // ILIKE is a PostgreSQL-specific operator that ignores case
             $baseQuery .= ' WHERE g.title ILIKE :search';
         }
 
@@ -98,50 +97,91 @@ class GameRepository extends Repository {
 
     // Retrieves filtered and sorted games from the statistics view
     public function getAllGamesFiltered($filters, $sortColumn, $sortDir) {
-        $sql = "SELECT * FROM v_game_statistics WHERE 1=1";
+        $sql = "
+            SELECT g.*, g.id AS game_id, COALESCE(v.calculated_rating, 0.0) AS calculated_rating, COALESCE(v.total_reviews, 0) AS total_reviews 
+            FROM games g
+            LEFT JOIN v_game_statistics v ON g.id = v.game_id 
+            WHERE 1=1
+        ";
         $params = [];
 
-        // Dynamic filter building
+        // Dynamic filter building for ranges
         if (isset($filters['min_id']) && $filters['min_id'] !== '') {
-            $sql .= " AND game_id >= :min_id";
+            $sql .= " AND g.id >= :min_id";
             $params[':min_id'] = $filters['min_id'];
         }
         if (isset($filters['max_id']) && $filters['max_id'] !== '') {
-            $sql .= " AND game_id <= :max_id";
+            $sql .= " AND g.id <= :max_id";
             $params[':max_id'] = $filters['max_id'];
         }
         if (isset($filters['min_price']) && $filters['min_price'] !== '') {
-            $sql .= " AND price >= :min_price";
+            $sql .= " AND g.price >= :min_price";
             $params[':min_price'] = $filters['min_price'];
         }
         if (isset($filters['max_price']) && $filters['max_price'] !== '') {
-            $sql .= " AND price <= :max_price";
+            $sql .= " AND g.price <= :max_price";
             $params[':max_price'] = $filters['max_price'];
         }
         if (isset($filters['min_rating']) && $filters['min_rating'] !== '') {
-            $sql .= " AND calculated_rating >= :min_rating";
+            $sql .= " AND v.calculated_rating >= :min_rating";
             $params[':min_rating'] = $filters['min_rating'];
         }
         if (isset($filters['max_rating']) && $filters['max_rating'] !== '') {
-            $sql .= " AND calculated_rating <= :max_rating";
+            $sql .= " AND v.calculated_rating <= :max_rating";
             $params[':max_rating'] = $filters['max_rating'];
         }
-        if (isset($filters['min_reviews']) && $filters['min_reviews'] !== '') {
-            $sql .= " AND total_reviews >= :min_reviews";
-            $params[':min_reviews'] = $filters['min_reviews'];
-        }
-        if (isset($filters['max_reviews']) && $filters['max_reviews'] !== '') {
-            $sql .= " AND total_reviews <= :max_reviews";
-            $params[':max_reviews'] = $filters['max_reviews'];
+
+        // Availability filtering (Free, Paid, Coming Soon)
+        if (array_key_exists('type_free', $filters) && isset($filters['filtered']) && $filters['filtered'] == '1') {
+            $availabilityConditions = [];
+            if (!empty($filters['type_free'])) {
+                $availabilityConditions[] = "(g.price = 0 AND g.release_date <= CURRENT_DATE)";
+            }
+            if (!empty($filters['type_paid'])) {
+                $availabilityConditions[] = "(g.price > 0 AND g.release_date <= CURRENT_DATE)";
+            }
+            if (!empty($filters['type_upcoming'])) {
+                $availabilityConditions[] = "(g.release_date > CURRENT_DATE)";
+            }
+
+            if (!empty($availabilityConditions)) {
+                $sql .= " AND (" . implode(" OR ", $availabilityConditions) . ")";
+            } else {
+                $sql .= " AND 1=0"; // everything unchecked in the store - no results
+            }
         }
 
-        // Whitelist for allowed sorting columns to prevent SQL injection
-        $allowedColumns = ['game_id', 'title', 'price', 'calculated_rating', 'total_reviews'];
+        // Category filtering - if "cat_all" is not set, we need to filter by specific categories
+        if (array_key_exists('cat_all', $filters) && isset($filters['filtered']) && $filters['filtered'] == '1') {
+            if (empty($filters['cat_all'])) {
+                if (!empty($filters['categories']) && is_array($filters['categories'])) {
+                    $categoryPlaceholders = [];
+                    foreach ($filters['categories'] as $index => $cat) {
+                        $paramName = ":cat_" . $index;
+                        $categoryPlaceholders[] = $paramName;
+                        $params[$paramName] = $cat;
+                    }
+                    $sql .= " AND g.category IN (" . implode(",", $categoryPlaceholders) . ")";
+                } else {
+                    $sql .= " AND 1=0"; // everything unchecked in the store - no results
+                }
+            }
+        }
+
+        // Whitelist for allowed sorting columns
+        $allowedColumns = ['game_id', 'title', 'price', 'calculated_rating'];
         if (!in_array($sortColumn, $allowedColumns)) {
             $sortColumn = 'game_id';
         }
         
-        $sql .= " ORDER BY " . $sortColumn . " " . $sortDir;
+        $realSortCol = ($sortColumn === 'calculated_rating') ? 'v.calculated_rating' : (($sortColumn === 'game_id') ? 'g.id' : 'g.' . $sortColumn);
+
+        // Force case-insensitive sorting for text columns
+        if ($sortColumn === 'title') {
+            $sql .= " ORDER BY LOWER(g.title) " . $sortDir;
+        } else {
+            $sql .= " ORDER BY " . $realSortCol . " " . $sortDir;
+        }
 
         $stmt = $this->database->prepare($sql);
         $stmt->execute($params); 
@@ -232,5 +272,131 @@ class GameRepository extends Repository {
         $stmt = $this->database->prepare('SELECT 1 FROM wishlist WHERE game_id = :game_id AND user_id = :user_id');
         $stmt->execute(['game_id' => $gameId, 'user_id' => $userId]);
         return (bool)$stmt->fetchColumn();
+    }
+
+    // Retrieves the single featured game for the store banner
+    public function getFeaturedGame(): ?Game {
+        $stmt = $this->database->prepare('
+            SELECT g.*, v.calculated_rating AS average_rating 
+            FROM games g 
+            LEFT JOIN v_game_statistics v ON g.id = v.game_id 
+            WHERE g.is_featured = true 
+            LIMIT 1
+        ');
+        $stmt->execute();
+        
+        $game = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$game) {
+            return null;
+        }
+
+        return new Game(
+            $game['id'],
+            $game['title'],
+            $game['description'],
+            $game['category'],
+            (float)$game['price'],
+            $game['graphics'],
+            (float)($game['average_rating'] ?? 0),
+            $game['specification'],
+            $game['developer'],
+            $game['release_date']
+        );
+    }
+
+    // Retrieves top 4 highly rated games based on rating, review count, and price
+    public function getTopRatedGames(): array {
+        $stmt = $this->database->prepare('
+            SELECT g.id, g.title, g.description, g.category, g.price, g.graphics, g.specification, g.developer, g.release_date,
+                   COALESCE(v.calculated_rating, 0.0) AS average_rating
+            FROM games g
+            LEFT JOIN v_game_statistics v ON g.id = v.game_id
+            WHERE g.release_date <= CURRENT_DATE
+            ORDER BY average_rating DESC, COALESCE(v.total_reviews, 0) DESC, g.price ASC
+            LIMIT 4
+        ');
+        $stmt->execute();
+
+        $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = [];
+
+        foreach ($games as $game) {
+            $result[] = new Game(
+                $game['id'],
+                $game['title'],
+                $game['description'],
+                $game['category'],
+                (float)$game['price'],
+                $game['graphics'],
+                (float)$game['average_rating'],
+                $game['specification'],
+                $game['developer'], 
+                $game['release_date']
+            );
+        }
+        return $result;
+    }
+
+    // Retrieves the top 4 most recently released games using the database view
+    public function getRecommendedGames(): array {
+        $stmt = $this->database->prepare('SELECT * FROM v_recommended_games');
+        $stmt->execute();
+
+        $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $result = [];
+
+        foreach ($games as $game) {
+            $result[] = new Game(
+                $game['id'],
+                $game['title'],
+                $game['description'],
+                $game['category'],
+                (float)$game['price'],
+                $game['graphics'],
+                (float)$game['average_rating'],
+                $game['specification'],
+                $game['developer'], 
+                $game['release_date']
+            );
+        }
+
+        return $result;
+    }
+
+    // Retrieves a list of unique categories available in the store for filtering
+    public function getAllCategories(): array {
+        $stmt = $this->database->prepare('
+            SELECT DISTINCT category 
+            FROM games 
+            WHERE category IS NOT NULL AND category != \'\'
+            ORDER BY category ASC
+        ');
+        $stmt->execute();
+        
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    // Sets a specific game as the featured one and unsets all others
+    public function setFeaturedGame(int $gameId): void {
+        try {
+            $this->database->beginTransaction();
+            
+            // Reset featured status for all games
+            $stmtReset = $this->database->prepare('UPDATE games SET is_featured = false');
+            $stmtReset->execute();
+            
+            // Set featured status only for the selected game (if ID is greater than 0)
+            if ($gameId > 0) {
+                $stmtSet = $this->database->prepare('UPDATE games SET is_featured = true WHERE id = :id');
+                $stmtSet->bindParam(':id', $gameId, PDO::PARAM_INT);
+                $stmtSet->execute();
+            }
+            
+            $this->database->commit();
+        } catch (PDOException $e) {
+            $this->database->rollBack();
+            throw $e;
+        }
     }
 }

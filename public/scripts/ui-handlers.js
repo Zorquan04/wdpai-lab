@@ -130,3 +130,37 @@ export function toggleEditMode() {
         }
     }
 }
+
+// Dropdown Handling
+
+// Toggles a specific dropdown menu
+export function toggleDropdown(dropdownId) {
+    const target = document.getElementById(dropdownId);
+    if (!target) return;
+
+    // Close all other dropdowns before opening the selected one
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        if (menu.id !== dropdownId && !menu.classList.contains('hidden')) {
+            menu.classList.add('hidden');
+            menu.classList.remove('fade-in-card');
+        }
+    });
+
+    // Toggle visibility of the target dropdown
+    target.classList.toggle('hidden');
+
+    // Add animation when opening
+    if (!target.classList.contains('hidden')) {
+        target.classList.add('fade-in-card');
+    }
+}
+
+// Closes all dropdowns if user clicks outside of any dropdown container
+export function closeDropdownsOnClickOutside(event) {
+    if (!event.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown-menu').forEach(menu => {
+            menu.classList.add('hidden');
+            menu.classList.remove('fade-in-card');
+        });
+    }
+}

@@ -1,7 +1,5 @@
-/* Library Page */
-.library-header {
-    margin-bottom: 40px;
-}
+/* Library */
+.library-header { margin-bottom: 40px; }
 
 .library-header h1 {
     font-size: 2rem;
@@ -32,7 +30,7 @@
     font-weight: 500;
 }
 
-/* Profile Dashboard */
+/* Profile */
 .profile-wrapper {
     max-width: 900px;
     margin: 0 auto;
@@ -45,7 +43,7 @@
     margin-bottom: 30px;
 }
 
-/* Profile View Mode Cards */
+/* Profile Card */
 .profile-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-subtle);
@@ -93,6 +91,7 @@
     line-height: 1.5;
 }
 
+/* Mini Cards */
 .profile-mini-cards {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -121,7 +120,7 @@
     font-weight: 500;
 }
 
-/* Profile Edit Mode */
+/* Edit Mode */
 .edit-card {
     flex-direction: column;
     align-items: stretch;
@@ -158,7 +157,7 @@
     margin-top: 20px;
 }
 
-/* Avatar Picker Grid */
+/* Avatar Picker */
 .avatar-grid {
     display: flex;
     gap: 15px;
@@ -187,7 +186,7 @@
     box-shadow: 0 0 15px rgba(52, 211, 153, 0.4);
 }
 
-/* Game Details Page */
+/* Game Details */
 .game-hero {
     width: 100%;
     height: 550px;
@@ -229,6 +228,7 @@
     transform: translate(-50%, -50%) scale(1.1);
 }
 
+/* Layout */
 .game-content-grid {
     display: grid;
     grid-template-columns: 1fr 350px;
@@ -273,40 +273,21 @@
     margin-bottom: 40px;
 }
 
-/* Helper classes */
-.buy-response-msg {
-    display: block;
-    text-align: center;
-    margin-top: 10px;
-    font-size: 0.85rem;
+/* Game Meta Alignment */
+.game-meta-bottom-row {
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-top: auto;
 }
 
-.empty-reviews-msg {
-    color: var(--text-muted);
-    font-style: italic;
-    text-align: center;
-    margin-top: 40px;
-}
-
-/* Avatar Image Reset */
-.review-avatar {
-    background-color: transparent;
-}
-
-.review-avatar img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* Game Details Sidebar (Buy Card) */
+/* Buy Card */
 .buy-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-subtle);
     border-radius: 12px;
     padding: 30px;
-    height: 100%; 
+    height: 100%;
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
@@ -324,11 +305,23 @@
     font-weight: 600;
 }
 
-.rating-value {
-    color: var(--primary);
+.rating-value { color: var(--primary); }
+
+/* Sidebar Flex Adjustments */
+.sidebar-flex-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
 }
 
-/* Reviews Section */
+.buy-card-flex {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+/* Reviews */
 .reviews-section {
     margin-top: 60px;
     box-sizing: border-box;
@@ -374,9 +367,7 @@
     font-size: 1.6rem;
 }
 
-.review-form-card h3 i {
-    color: var(--primary);
-}
+.review-form-card h3 i { color: var(--primary); }
 
 .review-list {
     display: flex;
@@ -414,6 +405,13 @@
     align-items: center;
 }
 
+.review-avatar img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 .review-user-info {
     display: flex;
     flex-direction: column;
@@ -435,9 +433,7 @@
     font-size: 0.9rem;
 }
 
-.review-stars .active {
-    color: var(--primary);
-}
+.review-stars .active { color: var(--primary); }
 
 .review-text {
     color: var(--text-main);
@@ -446,30 +442,36 @@
     font-style: italic;
 }
 
-/* Responsiveness for Game Details */
+/* Helpers */
+.buy-response-msg {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.85rem;
+}
+
+.empty-reviews-msg {
+    color: var(--text-muted);
+    font-style: italic;
+    text-align: center;
+    margin-top: 40px;
+}
+
+/* Responsive */
 @media screen and (max-width: 1000px) {
-    .game-content-grid {
-        grid-template-columns: 1fr;
-    }
-    
+    .game-content-grid { grid-template-columns: 1fr; }
+
     .buy-card {
         position: static;
         margin-bottom: 40px;
     }
-    
-    .game-main-col {
-        order: 2;
-    }
-    
-    .game-sidebar {
-        order: 1;
-    }
+
+    .game-main-col { order: 2; }
+    .game-sidebar { order: 1; }
 }
 
-/* Admin Dashboard */
-.admin-header {
-    margin-bottom: 40px;
-}
+/* Admin */
+.admin-header { margin-bottom: 40px; }
 
 .admin-header h1 {
     font-size: 2.2rem;
@@ -500,7 +502,7 @@
     color: var(--text-main);
 }
 
-/* Admin Tables */
+/* Tables */
 .table-responsive {
     width: 100%;
     overflow-x: auto;
@@ -514,12 +516,12 @@
     table-layout: fixed;
 }
 
-.admin-table th:nth-child(1) { width: 10%; }  /* ID */
-.admin-table th:nth-child(2) { width: 15%; } /* Username / Title */
-.admin-table th:nth-child(3) { width: 15%; } /* Email / Price */
-.admin-table th:nth-child(4) { width: 15%; } /* Role / Reviews */
-.admin-table th:nth-child(5) { width: 15%; } /* Registered / Rating */
-.admin-table th:nth-child(6) { width: 20%; } /* Actions */
+.admin-table th:nth-child(1) { width: 10%; }
+.admin-table th:nth-child(2) { width: 15%; }
+.admin-table th:nth-child(3) { width: 15%; }
+.admin-table th:nth-child(4) { width: 15%; }
+.admin-table th:nth-child(5) { width: 15%; }
+.admin-table th:nth-child(6) { width: 20%; }
 
 .admin-table th {
     padding: 15px 20px;
@@ -544,7 +546,7 @@
     background-color: rgba(255, 255, 255, 0.02);
 }
 
-/* Admin Table Components */
+/* Admin Controls */
 .admin-select {
     background-color: var(--bg-input);
     color: var(--text-main);
@@ -559,9 +561,7 @@
     transition: border-color 0.2s ease;
 }
 
-.admin-select:focus {
-    border-color: var(--primary);
-}
+.admin-select:focus { border-color: var(--primary); }
 
 .select-admin {
     color: var(--primary);
@@ -580,14 +580,6 @@
 }
 
 /* Text Helpers */
-.fw-bold { 
-    font-weight: 700; 
-}
-
-.text-muted { 
-    color: var(--text-muted); 
-}
-
-.highlight-green { 
-    color: var(--primary); 
-}
+.fw-bold { font-weight: 700; }
+.text-muted { color: var(--text-muted); }
+.highlight-green { color: var(--primary); }

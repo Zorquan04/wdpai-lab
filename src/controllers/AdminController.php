@@ -13,23 +13,23 @@ class AdminController extends AppController {
         $this->gameRepository = new GameRepository();
     }
 
-    // the main method for displaying the admin dashboard with sorting and filtering
+    // The main method for displaying the admin dashboard with sorting and filtering
     public function index() {
         $this->checkAdmin();
         $currentUserId = $_SESSION['user_id'];
 
-        // extract query parameters directly from the uri to bypass router limitations
+        // Extract query parameters directly from the uri to bypass router limitations
         $queryString = parse_url($_SERVER['REQUEST_URI'], PHP_URL_QUERY) ?? '';
         parse_str($queryString, $queryParams);
 
-        // determine active tab and sorting defaults
+        // Determine active tab and sorting defaults
         $activeTab = $queryParams['tab'] ?? 'users';
         $defaultSort = ($activeTab === 'games') ? 'game_id' : 'id';
         
         $sort = $queryParams['sort'] ?? $defaultSort;
         $dir = isset($queryParams['dir']) && $queryParams['dir'] === 'desc' ? 'DESC' : 'ASC';
 
-        // prepare filters for games
+        // Prepare filters for games
         $gameFilters = [
             'min_id' => $queryParams['min_id'] ?? null,
             'max_id' => $queryParams['max_id'] ?? null,
@@ -42,7 +42,7 @@ class AdminController extends AppController {
             'filtered' => $queryParams['filtered'] ?? null
         ];
 
-        // prepare filters for users
+        // Prepare filters for users
         $userFilters = [
             'min_id' => $queryParams['min_id'] ?? null,
             'max_id' => $queryParams['max_id'] ?? null,
@@ -55,7 +55,7 @@ class AdminController extends AppController {
 
         $emptyFilters = [];
 
-        // fetch filtered data based on the active section
+        // Fetch filtered data based on the active section
         if ($activeTab === 'games') {
             $games = $this->gameRepository->getAllGamesFiltered($gameFilters, $sort, $dir);
             $users = $this->userRepository->getAllUsersFiltered($currentUserId, $emptyFilters, 'id', 'ASC');
@@ -64,11 +64,21 @@ class AdminController extends AppController {
             $users = $this->userRepository->getAllUsersFiltered($currentUserId, $userFilters, $sort, $dir);
         }
 
+        // Fetch current featured game and a lightweight list of all games for the dropdown
+        $featuredGame = $this->gameRepository->getFeaturedGame();
+        $allGamesList = $this->gameRepository->getGameStatistics();
+
+        // Fetch audit logs for deleted users
+        $auditLogs = $this->userRepository->getAuditLogs();
+
         return $this->render('admins/admin', [
             'title' => 'Admin Panel - GameNest',
             'games' => $games,
             'users' => $users,
-            'activeTab' => $activeTab
+            'activeTab' => $activeTab,
+            'featuredGame' => $featuredGame,
+            'allGamesList' => $allGamesList,
+            'auditLogs' => $auditLogs
         ]);
     }
 
@@ -269,6 +279,25 @@ class AdminController extends AppController {
                 } else {
                     $_SESSION['error_message'] = "An error occurred while saving the game.";
                 }
+            }
+        }
+        
+        header("Location: /admin");
+        exit();
+    }
+
+    // Updates the featured game displayed on the store front page
+    public function updateFeaturedGame() {
+        $this->checkAdmin();
+        
+        if ($this->isPost() && isset($_POST['game_id'])) {
+            $gameId = (int)$_POST['game_id'];
+            
+            try {
+                $this->gameRepository->setFeaturedGame($gameId);
+                $_SESSION['success_message'] = "Featured game has been successfully updated.";
+            } catch (PDOException $e) {
+                $_SESSION['error_message'] = "Failed to update the featured game.";
             }
         }
         

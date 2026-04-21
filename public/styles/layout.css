@@ -18,7 +18,7 @@
     gap: 40px;
 }
 
-/* Branding (Logo) */
+/* Logo */
 .logo {
     font-size: 1.25rem;
     font-weight: 800;
@@ -29,11 +29,9 @@
     align-items: center;
 }
 
-.logo i {
-    color: var(--primary);
-}
+.logo i { color: var(--primary); }
 
-/* Navbar Search */
+/* Search */
 .nav-search {
     flex-grow: 1;
     max-width: 500px;
@@ -68,9 +66,9 @@
     outline: none;
 }
 
-/* Navbar Search Buttons */
+/* Search Buttons */
 .btn-search, .btn-clear {
-    height: 32px; 
+    height: 32px;
     padding: 0 16px;
     border-radius: 20px;
     font-size: 0.85rem;
@@ -90,34 +88,15 @@
     color: #000;
 }
 
-.btn-search:hover {
-    background-color: var(--primary-hover);
-}
+.btn-search:hover { background-color: var(--primary-hover); }
 
 .btn-clear {
     background-color: transparent;
     color: var(--error);
     border: 1px solid var(--error);
-    white-space: nowrap; 
-    overflow: hidden; 
+    white-space: nowrap;
+    overflow: hidden;
     animation: revealClearBtn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-@keyframes revealClearBtn {
-    from { 
-        max-width: 0; 
-        padding-left: 0; 
-        padding-right: 0;
-        opacity: 0; 
-        transform: translateX(-15px); 
-    }
-    to { 
-        max-width: 100px;
-        padding-left: 16px; 
-        padding-right: 16px;
-        opacity: 1; 
-        transform: translateX(0); 
-    }
 }
 
 .btn-clear:hover {
@@ -129,19 +108,7 @@
     animation: hideClearBtn 0.25s ease-in forwards;
 }
 
-@keyframes hideClearBtn {
-    from { 
-        max-width: 100px; padding-left: 16px; padding-right: 16px; 
-        opacity: 1; transform: translateX(0); 
-    }
-    to { 
-        max-width: 0; padding-left: 0; padding-right: 0; 
-        opacity: 0; transform: translateX(-15px); 
-        color: transparent; border-color: transparent;
-    }
-}
-
-/* Navbar Links */
+/* Navigation Links */
 .nav-links {
     display: flex;
     gap: 30px;
@@ -163,7 +130,7 @@
     border-bottom: 2px solid var(--primary);
 }
 
-/* Navbar User */
+/* User */
 .nav-user {
     display: flex;
     align-items: center;
@@ -179,30 +146,28 @@
     transition: border-color 0.2s;
 }
 
-.nav-avatar-link img:hover {
-    border-color: var(--primary);
-}
+.nav-avatar-link img:hover { border-color: var(--primary); }
 
 .nav-logout {
     color: var(--text-muted);
     font-size: 1.1rem;
 }
 
-.nav-logout:hover {
-    color: var(--error);
-}
+.nav-logout:hover { color: var(--error); }
 
-/* Auth Header (Login/Register) */
+/* Auth Top Bar */
 .auth-top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 40px;
     position: absolute;
-    top: 0; left: 0; right: 0;
+    top: 0;
+    left: 0;
+    right: 0;
 }
 
-/* Main Layout Wrappers */
+/* Layout */
 .store-layout {
     max-width: 1400px;
     margin: 0 auto;
@@ -222,4 +187,41 @@
     color: var(--text-muted);
     font-size: 0.8rem;
     border-top: 1px solid var(--border-subtle);
+}
+
+/* Animations */
+@keyframes revealClearBtn {
+    from {
+        max-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        opacity: 0;
+        transform: translateX(-15px);
+    }
+    to {
+        max-width: 100px;
+        padding-left: 16px;
+        padding-right: 16px;
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes hideClearBtn {
+    from {
+        max-width: 100px;
+        padding-left: 16px;
+        padding-right: 16px;
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        max-width: 0;
+        padding-left: 0;
+        padding-right: 0;
+        opacity: 0;
+        transform: translateX(-15px);
+        color: transparent;
+        border-color: transparent;
+    }
 }

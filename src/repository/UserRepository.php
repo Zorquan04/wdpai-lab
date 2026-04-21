@@ -91,12 +91,12 @@ class UserRepository extends Repository {
         );
     }
 
-    // retrieves filtered and sorted users for the admin panel
+    // Retrieves filtered and sorted users for the admin panel
     public function getAllUsersFiltered(int $currentUserId, array $filters, string $sortColumn, string $sortDir): array {
         $sql = "SELECT id, username, email, role, created_at FROM users WHERE id != :currentId";
         $params = [':currentId' => $currentUserId];
 
-        // dynamic id filtering
+        // Dynamic id filtering
         if (isset($filters['min_id']) && $filters['min_id'] !== '') {
             $sql .= " AND id >= :min_id";
             $params[':min_id'] = $filters['min_id'];
@@ -106,7 +106,7 @@ class UserRepository extends Repository {
             $params[':max_id'] = $filters['max_id'];
         }
 
-        // date range filtering
+        // Date range filtering
         if (isset($filters['min_date']) && $filters['min_date'] !== '') {
             $sql .= " AND DATE(created_at) >= :min_date";
             $params[':min_date'] = $filters['min_date'];
@@ -116,7 +116,7 @@ class UserRepository extends Repository {
             $params[':max_date'] = $filters['max_date'];
         }
 
-        // handling role checkboxes
+        // Handling role checkboxes
         $validRoles = [];
         if (isset($filters['role_user']) && $filters['role_user'] === 'USER') {
             $validRoles[] = "'USER'";
@@ -125,7 +125,7 @@ class UserRepository extends Repository {
             $validRoles[] = "'ADMIN'";
         }
 
-        // apply role restrictions only if explicit filtering is active via the js flag
+        // Apply role restrictions only if explicit filtering is active via the js flag
         if (isset($filters['filtered'])) {
             if (!empty($validRoles)) {
                 $sql .= " AND role IN (" . implode(',', $validRoles) . ")";
@@ -134,13 +134,13 @@ class UserRepository extends Repository {
             }
         }
 
-        // sorting security and default column assignment
+        // Sorting security and default column assignment
         $allowedColumns = ['id', 'username', 'created_at'];
         if (!in_array($sortColumn, $allowedColumns)) {
             $sortColumn = 'id';
         }
 
-        // force case-insensitive sorting for text columns to prevent ascii value mismatch
+        // Force case-insensitive sorting for text columns to prevent ascii value mismatch
         if ($sortColumn === 'username') {
             $sql .= " ORDER BY LOWER(username) " . $sortDir;
         } else {
@@ -254,5 +254,18 @@ class UserRepository extends Repository {
         $stmt = $this->database->prepare('DELETE FROM users WHERE id = :id');
         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
         $stmt->execute();
+    }
+
+    // Retrieves recent deleted users from the audit_log table
+    public function getAuditLogs(): array {
+        try {
+            // We pull the last 10 records ordered by ID descending
+            $stmt = $this->database->prepare('SELECT id, action, details, created_at FROM audit_log ORDER BY id DESC LIMIT 2');
+            $stmt->execute();
+            return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            // Failsafe in case the table doesn't exist or is empty
+            return []; 
+        }
     }
 }

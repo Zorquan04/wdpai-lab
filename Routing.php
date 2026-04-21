@@ -102,6 +102,10 @@ class Routing {
             "controller" => "AdminController", 
             "action" => "saveGame"
         ],
+        "update-featured" => [
+            "controller" => "AdminController",
+            "action" => "updateFeaturedGame"
+        ],
         "delete-game" => [
             "controller" => "AdminController", 
             "action" => "deleteGame"

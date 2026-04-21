@@ -69,8 +69,8 @@
                 </div>
             </div>
 
-            <div class="game-sidebar" style="display: flex; flex-direction: column; gap: 20px; height: 100%;">
-                <div class="buy-card" style="display: flex; flex-direction: column; flex-grow: 1;">
+            <div class="game-sidebar sidebar-flex-container">
+                <div class="buy-card buy-card-flex">
                     <div class="buy-price">
                         <?= $game->getFormattedPrice(); ?>
                     </div>
@@ -85,7 +85,7 @@
                             </button>
                         
                         <?php elseif(!$game->isReleased()): ?>
-                            <button disabled class="btn-outline btn-block btn-disabled" style="padding: 20px; font-size: 1.1rem; margin-bottom: 20px;">
+                            <button disabled class="btn-outline btn-block btn-disabled p-20 fs-1-1 mb-20">
                                 <i class="fa-solid fa-clock btn-icon-margin"></i> Coming Soon
                             </button>
                         
@@ -155,7 +155,7 @@
         
         <div class="reviews-section">
             <div class="reviews-header">
-                <h2 style="margin: 0;">User Reviews</h2>
+                <h2 class="m-0">User Reviews</h2>
                 
                 <?php if(isset($_SESSION['user_id'])): ?>
                     <?php if($isOwned): ?>
@@ -258,22 +258,22 @@
             </div>
 
             <?php if(count($reviews) > 3): ?>
-                <div class="load-more-wrapper" style="margin-top: 40px;">
+                <div class="load-more-wrapper mt-40">
                     <button id="load-more-reviews-btn" class="btn-load-more">Load More Reviews <i class="fa-solid fa-chevron-down"></i></button>
                 </div>
             <?php endif; ?>
         </div>
     </main>
 
-    <div id="payment-modal" class="hidden" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;">
-        <div class="admin-card" style="max-width: 450px; width: 100%; text-align: center; padding: 40px; transform: translateY(20px); transition: transform 0.3s ease;" id="payment-modal-content">
-            <div style="font-size: 3rem; color: var(--text-muted); margin-bottom: 20px; display: flex; justify-content: center; gap: 15px;">
+    <div id="payment-modal" class="hidden modal-overlay">
+        <div class="admin-card modal-content" id="payment-modal-content">
+            <div class="modal-icons">
                 <i class="fa-brands fa-cc-stripe"></i> 
                 <i class="fa-brands fa-paypal"></i>
                 <i class="fa-brands fa-cc-visa"></i>
             </div>
-            <h2 style="margin-bottom: 10px;">Payment Gateway</h2>
-            <p class="text-muted" style="margin-bottom: 30px;">You are simulating a secure payment. Total amount to pay: <br><strong id="modal-price" style="font-size: 1.5rem; color: var(--primary);">0.00 PLN</strong></p>
+            <h2 class="mb-10">Payment Gateway</h2>
+            <p class="text-muted mb-30">You are simulating a secure payment. Total amount to pay: <br><strong id="modal-price" class="modal-price-highlight">0.00 PLN</strong></p>
             
             <div class="form-grid-2">
                 <button class="btn-outline" onclick="closePaymentModal(true)">Cancel</button>

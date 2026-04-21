@@ -2,12 +2,11 @@ import * as utils from './utils.js';
 import * as game from './game.js';
 import * as ui from './ui-handlers.js';
 import * as filters from './filters.js';
+import * as navi from './navigation.js';
 
-document.addEventListener('DOMContentLoaded', () => {
-    utils.initAlerts();
-    utils.initMobileMenu();
-    utils.initFileSizeProtection();
-    utils.setupClearButton();
+// We pack dynamic elements into a separate function
+function initDynamicContent() {
+    filters.initCategoryLogic();
 
     // Store: Discover 4 games at a time
     utils.setupLoadMore('load-more-btn', '.game-card', 'hidden-game', 4);
@@ -19,9 +18,27 @@ document.addEventListener('DOMContentLoaded', () => {
     utils.setupLoadMore('load-more-users-btn', '.admin-table-row', 'hidden-admin-row', 3);
     utils.setupLoadMore('load-more-admin-games-btn', '.admin-table-row', 'hidden-admin-row', 3);
 
-    // Listener: clicking outside the dropdown area closes it
-    document.addEventListener('click', filters.closeDropdownsOnClickOutside);
     filters.restoreState();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    utils.initAlerts();
+    utils.initMobileMenu();
+    utils.initFileSizeProtection();
+    utils.setupClearButton();
+    
+    // Initialization on first page load
+    initDynamicContent();
+
+    // Listener: clicking outside the dropdown area closes it
+    document.addEventListener('click', ui.closeDropdownsOnClickOutside);
+});
+
+// We listen for the content reload event from our new AJAX navigation!
+document.addEventListener('content-reloaded', () => {
+    initDynamicContent();
+
+    navi.animateTiles();
 });
 
 // We expose functions to Window so that HTML (onclick) can see them
@@ -36,7 +53,7 @@ window.toggleSecurityForm = ui.toggleSecurityForm;
 window.toggleReviewForm = ui.toggleReviewForm;
 window.selectAvatar = ui.selectAvatar;
 window.toggleEditMode = ui.toggleEditMode;
-window.toggleDropdown = filters.toggleDropdown;
+window.toggleDropdown = ui.toggleDropdown;
 window.clearFilters = filters.clearFilters;
 window.handleVisualSort = filters.handleVisualSort;
 window.applyFilters = filters.applyFilters;

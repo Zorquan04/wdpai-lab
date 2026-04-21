@@ -38,7 +38,7 @@
     color: var(--msg-error);
 }
 
-/* A class for Toast (floating) messages */
+/* Toast */
 .alert-toast {
     position: fixed;
     top: 100px;
@@ -47,7 +47,7 @@
     z-index: 10000;
     min-width: 320px;
     max-width: 600px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5); 
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
     pointer-events: none;
     opacity: 0;
 }
@@ -56,20 +56,7 @@
     animation: slideDownIn 0.5s ease-out forwards;
 }
 
-@keyframes slideDownIn {
-    from {
-        opacity: 0;
-        top: 60px;
-        transform: translateX(-50%);
-    }
-    to {
-        opacity: 1;
-        top: 100px;
-        transform: translateX(-50%);
-    }
-}
-
-/* Section Headers */
+/* Layout / Sections  */
 .section-header {
     display: flex;
     justify-content: space-between;
@@ -82,7 +69,7 @@
     color: var(--text-main);
 }
 
-/* Game Grid & Cards */
+/* Game Grid */
 .game-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -101,6 +88,7 @@
     .game-grid { grid-template-columns: 1fr; }
 }
 
+/* Game Card */
 .game-card {
     background-color: var(--bg-card);
     border: 1px solid var(--border-subtle);
@@ -132,9 +120,7 @@
     transition: opacity 0.3s ease;
 }
 
-.game-card:hover .game-card-image-wrapper img {
-    opacity: 1;
-}
+.game-card:hover .game-card-image-wrapper img { opacity: 1; }
 
 .game-card-content {
     padding: 15px;
@@ -178,10 +164,95 @@
     color: var(--text-main);
 }
 
-/* Load More Button */
-.hidden-game, .hidden-review, .hidden-admin-row {
-    display: none !important;
+/* Hero Banner */
+.hero-banner {
+    position: relative;
+    width: 100%;
+    min-height: 380px;
+    border-radius: 16px;
+    background-size: cover;
+    background-position: right center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    padding: 40px 50px;
+    margin-bottom: 40px;
+    overflow: hidden;
+    box-sizing: border-box;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
 }
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+    max-width: 50%;
+}
+
+.badge-featured {
+    background: rgba(52, 211, 153, 0.2);
+    color: var(--primary);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: inline-block;
+    margin-bottom: 15px;
+    border: 1px solid rgba(52, 211, 153, 0.4);
+}
+
+.hero-title {
+    font-size: 2.8rem;
+    line-height: 1.1;
+    font-weight: 800;
+    margin-bottom: 15px;
+    color: var(--text-main);
+    text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+}
+
+.hero-description {
+    font-size: 1rem;
+    color: #cbd5e1;
+    line-height: 1.6;
+    margin-bottom: 25px;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-pricing {
+    display: flex;
+    flex-direction: column;
+}
+
+.hero-price {
+    font-size: 1.8rem;
+    font-weight: 800;
+    color: var(--text-main);
+}
+
+@media (max-width: 768px) {
+    .hero-banner {
+        background-position: center;
+        background-image: linear-gradient(to top, rgba(13, 17, 23, 1) 10%, rgba(13, 17, 23, 0.6) 100%) !important;
+        padding: 30px 20px;
+        align-items: flex-end;
+    }
+    .hero-content { max-width: 100%; }
+    .hero-title { font-size: 2rem; }
+}
+
+/* Load More */
+.hidden-game, .hidden-review, .hidden-admin-row { display: none !important; }
 
 .load-more-wrapper {
     display: flex;
@@ -203,20 +274,16 @@
     gap: 10px;
 }
 
-.btn-load-more:hover {
-    background-color: var(--border-subtle);
-}
+.btn-load-more:hover { background-color: var(--border-subtle); }
 
-/* Dropdowns (Sort & Filter) */
+/*  Dropdowns */
 .controls-wrapper {
     display: flex;
     gap: 10px;
     align-items: center;
 }
 
-.dropdown {
-    position: relative;
-}
+.dropdown { position: relative; }
 
 .dropdown-menu {
     position: absolute;
@@ -231,13 +298,9 @@
     box-shadow: 0 15px 35px rgba(0,0,0,0.4);
 }
 
-/* Filtering Section */
-.filter-row {
-    margin-bottom: 15px;
-}
-.filter-row:last-child {
-    margin-bottom: 0;
-}
+/* Filters */
+.filter-row { margin-bottom: 15px; }
+.filter-row:last-child { margin-bottom: 0; }
 
 .filter-label {
     display: block;
@@ -265,7 +328,7 @@
     font-size: 0.9rem;
 }
 
-/* Custom checkbox styling */
+/* Checkbox */
 .checkbox-group {
     display: flex;
     gap: 15px;
@@ -312,7 +375,7 @@
     font-size: 0.95rem;
 }
 
-/* Sorting Section */
+/* Sorting */
 .sort-list {
     display: flex;
     flex-direction: column;
@@ -334,9 +397,7 @@
     font-size: 0.95rem;
 }
 
-.btn-sort-item:hover {
-    background: rgba(255,255,255,0.05);
-}
+.btn-sort-item:hover { background: rgba(255,255,255,0.05); }
 
 .btn-sort-item.active {
     background: rgba(52, 211, 153, 0.1);
@@ -349,11 +410,9 @@
     transition: transform 0.2s;
 }
 
-.btn-sort-item.active i {
-    color: var(--primary);
-}
+.btn-sort-item.active i { color: var(--primary); }
 
-/* Empty States */
+/* Empty State */
 .empty-state {
     text-align: center;
     padding: 60px 20px;
@@ -368,19 +427,69 @@
     margin-bottom: 20px;
 }
 
-.empty-state h3 {
-    margin-bottom: 10px;
-}
+.empty-state h3 { margin-bottom: 10px; }
 
 .empty-state p {
     color: var(--text-muted);
     margin-bottom: 25px;
 }
 
+/* Modal (Payment/Overlay) Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.85);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    max-width: 450px;
+    width: 100%;
+    text-align: center;
+    padding: 40px;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.modal-icons {
+    font-size: 3rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.modal-price-highlight {
+    font-size: 1.5rem;
+    color: var(--primary);
+}
+
 /* Animations */
 @keyframes slideDown {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDownIn {
+    from {
+        opacity: 0;
+        top: 60px;
+        transform: translateX(-50%);
+    }
+    to {
+        opacity: 1;
+        top: 100px;
+        transform: translateX(-50%);
+    }
 }
 
 @keyframes revealCard {
@@ -393,10 +502,10 @@
     opacity: 0;
 }
 
-/* Global Page Transition */
+/* Page Transition */
 .page-enter-animation {
     animation: pageSlideUp 3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    opacity: 0; 
+    opacity: 0;
     transform: translateY(40px);
 }
 
@@ -407,7 +516,6 @@
     }
 }
 
-/* Animation for the Clear button in the Search Bar */
 @keyframes popInRight {
     from { opacity: 0; transform: translateX(-10px) scale(0.9); }
     to { opacity: 1; transform: translateX(0) scale(1); }

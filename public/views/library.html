@@ -27,7 +27,7 @@
                 <a href="/" class="btn-primary">Browse Store</a>
             </div>
         <?php else: ?>
-            <div class="game-grid" style="margin-bottom: 60px;">
+            <div class="game-grid mb-60">
                 <?php foreach($library as $game): ?>
                     <a href="/game/<?= $game['game_id'] ?>" class="game-card">
                         <div class="game-card-image-wrapper">
@@ -42,7 +42,7 @@
             </div>
         <?php endif; ?>
 
-        <div class="section-header" style="margin-top: 40px; border-top: 1px solid var(--border-subtle); padding-top: 40px;">
+        <div class="section-header mt-40 pt-40 border-top-subtle">
             <h2><i class="fa-solid fa-heart btn-icon-margin text-primary"></i> My Wishlist</h2>
             <div class="library-stats">
                 <span class="stat-pill"><?= count($wishlist) ?> SAVED</span>
@@ -68,11 +68,11 @@
                                 <span class="game-card-category"><?= htmlspecialchars($w_game['category']); ?></span>
                             </div>
                             <h3 class="game-card-title"><?= htmlspecialchars($w_game['title']); ?></h3>
-                            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: auto;">
-                                <p class="game-card-price" style="margin: 0;">
+                            <div class="game-meta-bottom-row">
+                                <p class="game-card-price m-0">
                                     <?= $w_game['price'] <= 0 ? 'Free' : number_format($w_game['price'], 2) . ' PLN' ?>
                                 </p>
-                                <span style="font-size: 0.75rem; color: var(--text-muted);">Added: <?= date('d M', strtotime($w_game['added_at'])) ?></span>
+                                <span class="text-muted fs-07">Added: <?= date('d M', strtotime($w_game['added_at'])) ?></span>
                             </div>
                         </div>
                     </a>
