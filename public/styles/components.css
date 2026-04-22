@@ -76,18 +76,6 @@
     gap: 25px;
 }
 
-@media screen and (max-width: 1100px) {
-    .game-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media screen and (max-width: 800px) {
-    .game-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media screen and (max-width: 500px) {
-    .game-grid { grid-template-columns: 1fr; }
-}
-
 /* Game Card */
 .game-card {
     background-color: var(--bg-card);
@@ -238,17 +226,6 @@
     font-size: 1.8rem;
     font-weight: 800;
     color: var(--text-main);
-}
-
-@media (max-width: 768px) {
-    .hero-banner {
-        background-position: center;
-        background-image: linear-gradient(to top, rgba(13, 17, 23, 1) 10%, rgba(13, 17, 23, 0.6) 100%) !important;
-        padding: 30px 20px;
-        align-items: flex-end;
-    }
-    .hero-content { max-width: 100%; }
-    .hero-title { font-size: 2rem; }
 }
 
 /* Load More */
@@ -500,6 +477,32 @@
 .fade-in-card {
     animation: revealCard 0.5s ease forwards;
     opacity: 0;
+}
+
+/* FAQ */
+details.faq-item[open] .faq-content {
+    animation: slideDownFade 0.3s ease-out forwards;
+}
+
+details.faq-item::details-content {
+    height: 0;
+    overflow: hidden;
+    transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), display 0.4s allow-discrete, content-visibility 0.4s allow-discrete;
+}
+
+details.faq-item[open]::details-content {
+    height: auto;
+}
+
+@keyframes slideDownFade {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* Page Transition */

@@ -7,6 +7,7 @@ require_once 'src/controllers/StoreController.php';
 require_once 'src/controllers/GameController.php';
 require_once 'src/controllers/LibraryController.php';
 require_once 'src/controllers/AdminController.php';
+require_once 'src/controllers/SupportController.php';
 
 class Routing {
     // Store controller instances (Singleton-like behavior)
@@ -109,6 +110,10 @@ class Routing {
         "delete-game" => [
             "controller" => "AdminController", 
             "action" => "deleteGame"
+        ],
+        "support" => [
+            "controller" => "SupportController",
+            "action" => "index"
         ],
         "" => [
             "controller" => "StoreController",

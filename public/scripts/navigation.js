@@ -51,25 +51,54 @@ window.addEventListener('popstate', () => {
 
 // Tile Animation
 export function animateTiles() {
-    const cards = document.querySelectorAll('#store-grid .game-card:not(.hidden-game)');
+    // We check what page/tab we are on from the URL
+    const params = new URLSearchParams(window.location.search);
+    const isStore = document.getElementById('store-grid') !== null;
     
-    cards.forEach((card, index) => {
-        // We immediately hide the element and move it down
-        card.style.transition = 'none';
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-
-        // We apply a delayed, smooth entry, simulating a cascade (50ms interval)
-        setTimeout(() => {
-            card.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
-            card.style.opacity = '1';
-            card.style.transform = 'translateY(0)';
+    // Default logic for the store (slower waterfall effect)
+    if (isStore) {
+        const storeCards = document.querySelectorAll('#store-grid .game-card:not(.hidden-game)');
+        storeCards.forEach((card, index) => {
+            card.style.transition = 'none';
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
 
             setTimeout(() => {
-                card.style.transition = '';
-                card.style.transform = '';
-            }, 400);
-            
-        }, (index % 8) * 50 + 10);
-    });
+                card.style.transition = 'opacity 0.4s ease, transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    card.style.transition = '';
+                    card.style.transform = '';
+                }, 400);
+            }, (index % 8) * 60 + 10); // 60ms - return to the original pace
+        });
+    } 
+    // Default logic for admin panel (faster, isolating tables)
+    else {
+        const activeTab = params.get('tab') || 'users'; 
+        
+        // We select only one specific table for animation - first card is Users, second is Games
+        let activeSelector = '#admin-users-card .admin-table-row:not(.hidden-admin-row)';
+        if (activeTab === 'games') {
+            activeSelector = '#admin-games-card .admin-table-row:not(.hidden-admin-row)';
+        }
+
+        const adminRows = document.querySelectorAll(activeSelector);
+        adminRows.forEach((row, index) => {
+            row.style.transition = 'none';
+            row.style.opacity = '0';
+            row.style.transform = 'translateY(15px)';
+
+            setTimeout(() => {
+                row.style.transition = 'opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                row.style.opacity = '1';
+                row.style.transform = 'translateY(0)';
+                setTimeout(() => {
+                    row.style.transition = '';
+                    row.style.transform = '';
+                }, 300);
+            }, (index % 15) * 30 + 10);
+        });
+    }
 }

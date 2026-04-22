@@ -15,7 +15,8 @@ export function handleVisualSort(buttonElement, tableType, sortColumn) {
     const activeTab = params.get('tab') || 'users';
 
     // Define default sorting column depending on table
-    const defaultSort = tableType === 'games' ? 'game_id' : 'id';
+    const defaultSort = tableType === 'games' || tableType === 'store' ? 'game_id' : 'id';
+    const defaultDir = tableType === 'games' || tableType === 'store' ? 'desc' : 'asc';
     
     let actualCurrentSort;
     let actualCurrentDir;
@@ -23,10 +24,10 @@ export function handleVisualSort(buttonElement, tableType, sortColumn) {
     // Determine current sorting state based on URL params
     if ((activeTab === tableType || tableType === 'store') && params.has('sort')) {
         actualCurrentSort = params.get('sort');
-        actualCurrentDir = params.get('dir') || 'asc';
+        actualCurrentDir = params.get('dir') || defaultDir;
     } else {
         actualCurrentSort = defaultSort;
-        actualCurrentDir = 'asc';
+        actualCurrentDir = defaultDir;
     }
 
     // Toggle direction if clicking the same column again
@@ -168,19 +169,18 @@ export function restoreState() {
         const btnTableType = args[1];
         const btnSortCol = args[2];
 
-        const defaultSort = btnTableType === 'games' || btnTableType === 'store'
-            ? 'game_id'
-            : 'id';
+        const defaultSort = btnTableType === 'games' || btnTableType === 'store' ? 'game_id' : 'id';
+        const defaultDir = btnTableType === 'games' || btnTableType === 'store' ? 'desc' : 'asc';
         
         let targetSort, targetDir;
 
         // Determine current sorting for this button
         if (activeTab === btnTableType || btnTableType === 'store') {
             targetSort = params.get('sort') || defaultSort;
-            targetDir = params.get('dir') || 'asc';
+            targetDir = params.get('dir') || defaultDir;
         } else {
             targetSort = defaultSort;
-            targetDir = 'asc';
+            targetDir = defaultDir;
         }
 
         // Highlight active sort button

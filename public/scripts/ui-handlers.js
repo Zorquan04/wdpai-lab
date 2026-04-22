@@ -55,23 +55,20 @@ export function toggleSecurityForm(targetFormType) {
     const container = document.getElementById('security-forms-container');
     const allForms = document.querySelectorAll('.sec-form');
     
-    // We always hide all forms at the beginning
+    // We close all forms (CSS will collapse them smoothly)
     allForms.forEach(form => form.classList.add('hidden'));
     
     if (targetFormType === 'none') {
-        container.classList.add('hidden'); // close all
+        setTimeout(() => container.classList.add('hidden'), 120); 
         return;
     }
     
-    // Show container and corresponding form with animation
+    // We open the main container and the selected form
     container.classList.remove('hidden');
     const targetForm = document.getElementById(`sec-form-${targetFormType}`);
     
     if (targetForm) {
-        targetForm.classList.remove('hidden');
-        targetForm.classList.remove('fade-in-card'); // reset animation
-        void targetForm.offsetWidth; // force reflow for animation restart
-        targetForm.classList.add('fade-in-card');
+        targetForm.classList.remove('hidden'); // CSS will automatically expand it
     }
 }
 

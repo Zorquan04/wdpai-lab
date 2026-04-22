@@ -442,6 +442,114 @@
     font-style: italic;
 }
 
+/* Security Zone Form Animation */
+.sec-form {
+    overflow: hidden;
+    height: auto;
+    opacity: 1;
+    transition: height 0.4s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.4s ease, margin 0.4s ease, padding 0.4s ease, display 0.4s allow-discrete;
+}
+
+.sec-form.hidden {
+    display: none;
+    height: 0;
+    opacity: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+/* @starting-style defines the starting point after removing .hidden */
+@starting-style {
+    .sec-form {
+        height: 0;
+        opacity: 0;
+        margin-top: 0;
+        margin-bottom: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
+}
+
+.security-forms-wrapper {
+    margin-top: 25px;
+    border-top: 1px solid var(--border-subtle);
+    padding-top: 25px;
+}
+
+ /* Support Page Styles */
+.support-hero {
+    background: linear-gradient(to bottom right, rgba(52, 211, 153, 0.1), rgba(13, 17, 23, 1));
+    border: 1px solid var(--border-subtle);
+    border-radius: 16px;
+    padding: 60px 20px;
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.support-hero h1 {
+    font-size: 3rem;
+    color: var(--text-main);
+    margin-bottom: 15px;
+}
+
+/* FAQ Accordion */
+.faq-item {
+    background: var(--bg-input);
+    border: 1px solid var(--border-subtle);
+    border-radius: 8px;
+    margin-bottom: 15px;
+    overflow: hidden;
+    transition: border-color 0.2s ease;
+}
+
+.faq-item:hover { border-color: rgba(52, 211, 153, 0.4); }
+
+.faq-item summary {
+    padding: 20px;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--text-main);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+}
+
+.faq-item:last-of-type { margin-bottom: 0 !important; }
+.faq-item summary::-webkit-details-marker { display: none; }
+
+.faq-item summary::after {
+    content: '\f078';
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    color: var(--primary);
+    transition: transform 0.3s ease;
+}
+
+.faq-item[open] summary::after { transform: rotate(180deg); }
+
+.faq-content {
+    padding: 0 20px 20px 20px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    border-top: 1px solid rgba(255,255,255,0.02);
+    margin-top: 5px;
+    padding-top: 15px;
+}
+
+/* Contact Info Cards */
+.contact-card {
+    background: linear-gradient(145deg, rgba(255,255,255,0.03), rgba(0,0,0,0.2));
+    border-radius: 12px;
+    border: 1px solid var(--border-subtle);
+    padding: 30px;
+    text-align: left;
+    transition: transform 0.4s ease-out, border-color 0.2s ease;
+}
+
 /* Helpers */
 .buy-response-msg {
     display: block;
@@ -455,19 +563,6 @@
     font-style: italic;
     text-align: center;
     margin-top: 40px;
-}
-
-/* Responsive */
-@media screen and (max-width: 1000px) {
-    .game-content-grid { grid-template-columns: 1fr; }
-
-    .buy-card {
-        position: static;
-        margin-bottom: 40px;
-    }
-
-    .game-main-col { order: 2; }
-    .game-sidebar { order: 1; }
 }
 
 /* Admin */

@@ -353,13 +353,6 @@ input:-webkit-autofill:active {
     margin-top: 20px;
 }
 
-@media (max-width: 768px) {
-    .specs-wrapper {
-        grid-template-columns: 1fr;
-        gap: 30px;
-    }
-}
-
 .specs-column h4 {
     font-size: 0.85rem;
     text-transform: uppercase;

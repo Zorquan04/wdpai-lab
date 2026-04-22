@@ -15,7 +15,83 @@
             <p class="text-muted">Manage platform users, roles, and game library.</p>
         </div>
 
-        <div class="admin-card mb-30">
+        <div class="grid-2-col gap-30">
+            <div class="admin-card">
+                <div class="admin-card-header flex-between mb-20">
+                    <h2><i class="fa-solid fa-star text-primary btn-icon-margin"></i> Featured Game</h2>
+                    <p class="text-muted section-subtitle text-right max-w-50">Select the game for the store banner.</p>
+                </div>
+                
+                <form action="/update-featured" method="POST" class="clean-form mt-20 text-center">
+                    <div class="form-group">
+                        <select name="game_id" class="form-input text-center cursor-pointer">
+                            <option value="0">-- None (Hide Banner) --</option>
+                            <?php foreach($allGamesList as $g): ?>
+                                <option value="<?= $g['game_id'] ?>" <?= ($featuredGame && $featuredGame->getId() === $g['game_id']) ? 'selected' : '' ?>>
+                                    <?= htmlspecialchars($g['title']) ?> (ID: <?= $g['game_id'] ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-primary">Update Banner</button>
+                </form>
+            </div>
+
+           <div class="admin-card">
+                <div class="admin-card-header flex-between mb-20">
+                    <h2><i class="fa-solid fa-user-slash text-error btn-icon-margin"></i> System Audit Logs</h2>
+                    <p class="text-muted section-subtitle text-right max-w-50">Recent account deletions.</p>
+                </div>
+                
+                <div class="table-responsive">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th class="w-80">Log ID</th>
+                                <th class="text-center">Details</th>
+                                <th class="w-130 text-right">Timestamp</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if(empty($auditLogs)): ?>
+                                <tr>
+                                    <td colspan="3" class="text-muted text-center p-20">
+                                        No deletion records found.
+                                    </td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach($auditLogs as $index => $log): ?>
+                                    <tr class="admin-table-row" style="animation-delay: '<?= $index * 0.05 ?>'s">
+                                        <td class="text-muted fw-bold">
+                                            #<?= $log['id'] ?>
+                                        </td>
+                                        <td class="text-main fs-085 text-center">
+                                            <?php 
+                                                $logDetails = $log['details'];
+                                                if (preg_match('/User (.*?) \(ID: (\d+)\)/', $logDetails, $matches)) {
+                                                    echo htmlspecialchars($matches[1]) . ' <span class="text-muted fs-07">(ID: ' . $matches[2] . ')</span>';
+                                                } else {
+                                                    echo "Deleted Account";
+                                                }
+                                            ?>
+                                        </td>
+                                        <td class="text-muted text-right fs-08">
+                                            <?php 
+                                                $dt = new DateTime($log['created_at'], new DateTimeZone('UTC'));
+                                                $dt->setTimezone(new DateTimeZone('Europe/Warsaw'));
+                                                echo $dt->format('d M, H:i');
+                                            ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div id="admin-users-card" class="admin-card mb-30">
             <div class="admin-card-header flex-between mb-20">
                 <h2><i class="fa-solid fa-users text-primary btn-icon-margin"></i> Users Management</h2>
                 
@@ -123,7 +199,7 @@
             <?php endif; ?>
         </div>
 
-        <div class="admin-card">
+        <div id="admin-games-card" class="admin-card">
             <div class="admin-card-header flex-between mb-20">
                 <h2><i class="fa-solid fa-gamepad text-primary btn-icon-margin"></i> Games Management</h2>
                 
@@ -225,82 +301,6 @@
                     <button id="load-more-admin-games-btn" class="btn-load-more">Load More Games <i class="fa-solid fa-chevron-down"></i></button>
                 </div>
             <?php endif; ?>
-        </div>
-
-        <div class="grid-2-col gap-30 mb-30">
-            <div class="admin-card">
-                <div class="admin-card-header flex-between mb-20">
-                    <h2><i class="fa-solid fa-star text-primary btn-icon-margin"></i> Featured Game</h2>
-                    <p class="text-muted section-subtitle text-right max-w-50">Select the game for the store banner.</p>
-                </div>
-                
-                <form action="/update-featured" method="POST" class="clean-form mt-20 text-center">
-                    <div class="form-group">
-                        <select name="game_id" class="form-input text-center cursor-pointer">
-                            <option value="0">-- None (Hide Banner) --</option>
-                            <?php foreach($allGamesList as $g): ?>
-                                <option value="<?= $g['game_id'] ?>" <?= ($featuredGame && $featuredGame->getId() === $g['game_id']) ? 'selected' : '' ?>>
-                                    <?= htmlspecialchars($g['title']) ?> (ID: <?= $g['game_id'] ?>)
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                    <button type="submit" class="btn-primary">Update Banner</button>
-                </form>
-            </div>
-
-           <div class="admin-card">
-                <div class="admin-card-header flex-between mb-20">
-                    <h2><i class="fa-solid fa-user-slash text-error btn-icon-margin"></i> System Audit Logs</h2>
-                    <p class="text-muted section-subtitle text-right max-w-50">Recent account deletions.</p>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="admin-table">
-                        <thead>
-                            <tr>
-                                <th class="w-80">Log ID</th>
-                                <th class="text-center">Details</th>
-                                <th class="w-130 text-right">Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if(empty($auditLogs)): ?>
-                                <tr>
-                                    <td colspan="3" class="text-muted text-center p-20">
-                                        No deletion records found.
-                                    </td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach($auditLogs as $index => $log): ?>
-                                    <tr class="admin-table-row" style="animation-delay: '<?= $index * 0.05 ?>'s">
-                                        <td class="text-muted fw-bold">
-                                            #<?= $log['id'] ?>
-                                        </td>
-                                        <td class="text-main fs-085 text-center">
-                                            <?php 
-                                                $logDetails = $log['details'];
-                                                if (preg_match('/User (.*?) \(ID: (\d+)\)/', $logDetails, $matches)) {
-                                                    echo htmlspecialchars($matches[1]) . ' <span class="text-muted fs-07">(ID: ' . $matches[2] . ')</span>';
-                                                } else {
-                                                    echo "Deleted Account";
-                                                }
-                                            ?>
-                                        </td>
-                                        <td class="text-muted text-right fs-08">
-                                            <?php 
-                                                $dt = new DateTime($log['created_at'], new DateTimeZone('UTC'));
-                                                $dt->setTimezone(new DateTimeZone('Europe/Warsaw'));
-                                                echo $dt->format('d M, H:i');
-                                            ?>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
         </div>
     </main>
 
