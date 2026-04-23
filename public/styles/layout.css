@@ -5,7 +5,21 @@
     padding: 15px 0;
     position: sticky;
     top: 0;
-    z-index: 1000;
+    z-index: 4;
+}
+
+/* We force the wrapper added in HTML to be a horizontal line on the computer */
+.nav-menu-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+}
+
+.nav-menu-inner {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    width: 100%;
 }
 
 .nav-container {

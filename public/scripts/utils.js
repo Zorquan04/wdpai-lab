@@ -12,14 +12,15 @@ export function initAlerts() {
     });
 }
 
-// Mobile menu (Safety check fixed)
+// Mobile menu 
 export function initMobileMenu() {
-    const menuIcon = document.querySelector(".display-mobile.fa-bars");
-    const navList = document.querySelector("nav > div.container > ul");
+    const menuToggle = document.getElementById("mobile-menu-toggle");
+    const menuWrapper = document.getElementById("nav-menu-wrapper");
 
-    if (menuIcon && navList) {
-        menuIcon.addEventListener("click", () => {
-            navList.style.display = navList.style.display === "block" ? "none" : "block";
+    if (menuToggle && menuWrapper) {
+        menuToggle.addEventListener("click", () => {
+            // We switch the class that is responsible for expanding the menu
+            menuWrapper.classList.toggle("open");
         });
     }
 }

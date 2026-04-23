@@ -1,0 +1,576 @@
+/* Responsive Design (Mobiles & Small Tablets) - Max Width: 768px */
+
+/* Hiding the hamburger on the desktop */
+#mobile-menu-toggle {
+    display: none;
+    font-size: 1.8rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    /* 0. Global */
+    body, html { overflow-x: clip; }
+
+    /* 1. Navbar */
+    .main-nav { padding-bottom: 0; }
+
+    .nav-container {
+        padding: 5px 20px;
+        flex-wrap: wrap; 
+        justify-content: space-between; 
+        align-items: center;
+        box-sizing: border-box;
+    }
+
+    /* Prevent the logo from shrinking */
+    .logo {
+        font-size: 1.5rem !important;
+        flex-shrink: 0;
+    }
+
+    #mobile-menu-toggle { display: block; }
+
+    .nav-search {
+        order: 3; 
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .nav-search form {
+        display: flex; 
+        width: 100%;
+        box-sizing: border-box !important;
+        margin: 0;
+    }
+
+    .nav-search input {
+        flex: 1; 
+        min-width: 0;
+        width: 100%;
+        box-sizing: border-box !important;
+    }
+
+    /* Hidden dropdown menu */
+    .nav-menu-wrapper {
+        width: 100%;
+        order: 4; 
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.8s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.3s ease;
+    }
+
+    .nav-menu-wrapper.open {
+        max-height: 500px;
+        opacity: 1;
+    }
+
+    .nav-menu-inner {
+        display: flex;
+        flex-direction: column;
+        padding-top: 15px;
+        margin-top: 15px;
+        gap: 15px;
+        border-top: 1px solid rgba(255, 255, 255, 0.05); 
+    }
+
+    .nav-links, .nav-user {
+        flex-direction: column;
+        width: 100%;
+        align-items: center; 
+        gap: 15px;
+    }
+
+    /* Increased spacing in dropdown menus for tactile comfort */
+    .nav-links a, .nav-user a {
+        padding: 12px 0 !important;
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+
+    /* 2. Grids and Tiles - Ultimate 2-column override */
+    #store-grid, .grid-4-col, .grid-3-col, .grid-2-col, div:has(> .game-card) {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 15px !important;
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Ensure individual cards respect the new 2-column boundary */
+    .game-card {
+        width: 100% !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-card img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 3/4;
+        object-fit: cover;
+    }
+
+    /* Elegantly truncating long game titles with ellipsis */
+    .game-card h3 {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis; 
+        font-size: 1.05rem; 
+        margin-bottom: 5px;
+    }
+
+    /* 3. Hero / Featured Banner */
+    .featured-game, .hero-banner {
+        padding: 0 15px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        background-position: center;
+        background-size: cover;
+    }
+    
+    .featured-game h1, .hero-banner h1 {
+        font-size: 1.8rem !important; 
+        line-height: 1.2;
+        margin-bottom: 10px;
+    }
+
+    .featured-game p {
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+    }
+
+    /* Stack price and button vertically and perfectly centered */
+    .featured-game .flex.align-center {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        gap: 15px;
+    }
+
+    .featured-game .btn-primary {
+        width: 100%; 
+        padding: 12px 0;
+        font-size: 1.1rem;
+    }
+
+    /* 4. Filters & Dropdowns - Responsive, dynamic positioning */
+    .dropdown-menu {
+        position: absolute !important;
+        top: calc(100% + 15px) !important;
+        width: 85vw !important;
+        max-width: 280px !important;
+        margin: 0 !important;
+        z-index: 5 !important;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.8) !important;
+    }
+
+    /* Filters */
+    .dropdown:first-child .dropdown-menu {
+        left: 50% !important;
+        right: auto !important;
+        transform: translateX(-59%) !important;
+    }
+
+    /* Sort */
+    .dropdown:last-child .dropdown-menu {
+        right: 0 !important;
+        left: auto !important;
+        transform: none !important;
+    }
+
+    /* 5. Footer - Minimalist mobile version */
+    
+    /* We squash the empty desktop margins and padding of the main container */
+    .main-footer, .footer-container {
+        padding-top: 0 !important;
+        padding-bottom: 0 !important;
+    }
+
+    .footer-grid { display: none !important; }
+
+    .footer-bottom { 
+        padding: 20px 10px !important; 
+        border-top: none !important;
+    }
+
+    /* 6. Auth Pages (Login & Register) */
+    
+    /* We enforce a safe internal margin on the sides of the screen */
+    .auth-page-wrapper {
+        padding: 0 25px !important;
+        box-sizing: border-box !important;
+    }
+
+    .auth-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 auto !important;
+    }
+
+    /* 7. Dashboard & Account Settings */
+    
+    /* Change the main tab layout from horizontal to vertical */
+    .profile-info-row {
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        gap: 15px !important;
+    }
+
+    /* Avatar lands in the middle */
+    .profile-avatar-large { margin: 0 auto !important; }
+
+    /* Shrink the giant font and let it break long words */
+    .profile-name {
+        font-size: 1.6rem !important;
+        line-height: 1.2 !important;
+        word-wrap: break-word !important; 
+        overflow-wrap: break-word !important;
+    }
+
+    /* Arrange the mini-cards (Email, Username) vertically */
+    .profile-mini-cards {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 15px !important;
+    }
+
+    .mini-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    /* Edit form - force 1 column instead of 2 */
+    .form-grid-2 {
+        display: grid !important;
+        grid-template-columns: 1fr !important;
+        gap: 15px !important;
+    }
+
+    /* Security Zone buttons - full width and vertical layout */
+    .security-actions-nav {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .security-actions-nav button {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+
+    /* Force vertical layout on the entire profile card */
+    .profile-card {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+    }
+
+    /* Convert side button to a full-width bottom button */
+    .profile-card > .btn-outline {
+        position: static !important;
+        margin-top: 20px !important;
+        width: 100% !important;
+    }
+
+    /* Avatar selection grid layout */
+    .avatar-grid {
+        display: flex !important;
+        flex-wrap: wrap !important;
+        justify-content: center !important;
+        gap: 15px !important;
+        padding: 10px 0 !important;
+    }
+
+
+    /* 8. Support Page */
+       
+    /* Override desktop 2-column layout to a single column */
+    .support-hero + .grid-2-col {
+        grid-template-columns: 1fr !important;
+        gap: 30px !important;
+    }
+
+    /* Center and adjust main heading */
+    .support-hero {
+        padding: 20px 10px 30px 10px !important;
+        text-align: center;
+    }
+
+    .support-hero h1 {
+        font-size: 2rem !important;
+        line-height: 1.2;
+        margin-bottom: 10px;
+    }
+
+    /* Contact cards - ensure breathing room */
+    .contact-card {
+        padding: 20px 15px !important;
+        margin-bottom: 15px !important;
+        box-sizing: border-box !important;
+    }
+
+    /* FAQ items - adjust touch targets */
+    .faq-item { margin-bottom: 15px !important; }
+    
+    .faq-item summary {
+        padding: 15px !important;
+        font-size: 1rem !important;
+        line-height: 1.4 !important;
+    }
+
+    .faq-content {
+        padding: 15px !important;
+        font-size: 0.95rem !important;
+    }
+
+    /* Add space between FAQ and Contact sections */
+    .support-hero + .grid-2-col > div:last-child { margin-top: 20px !important; }
+
+
+    /* 9. Admin Dashboard */
+       
+    /* Break top dual columns into a single wide column */
+    .store-layout > .grid-2-col {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+    }
+
+    /* Grid Blowout Fix - prevent cards from expanding beyond screen */
+    .admin-card {
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+        min-width: 0 !important; 
+    }
+
+    /* Fix squished headers and subtitles */
+    .admin-card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 10px !important;
+    }
+
+    .admin-card-header p.text-right {
+        text-align: left !important;
+        max-width: 100% !important; 
+        margin-top: 5px !important;
+    }
+
+    /* Game select input - stretch for touch interaction & truncate long text */
+    .admin-card select.form-input {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px !important;
+        text-overflow: ellipsis !important;
+        overflow: hidden !important;
+        white-space: nowrap !important;
+    }
+
+    /* Table Horizontal Scrolling & Layout */
+    .table-responsive {
+        width: 100% !important;
+        overflow-x: auto !important; 
+        -webkit-overflow-scrolling: touch !important; 
+        margin-bottom: 15px !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05); 
+    }
+
+    /* Disable strict table layout to allow natural horizontal scrolling */
+    .admin-table {
+        table-layout: auto !important; 
+        width: max-content !important; 
+        min-width: 750px !important;
+        border-collapse: separate !important; 
+        font-size: 0.9rem !important;
+    }
+
+    /* Protect the last column from being clipped */
+    .admin-table th:last-child, .admin-table td:last-child {
+        padding-right: 10px !important; 
+        white-space: nowrap !important; 
+    }
+
+    /* Keep action buttons in one row and prevent shrinking */
+    .table-actions-group {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        min-width: max-content !important; 
+        gap: 10px !important;
+    }
+
+    /* Controls Wrapper */
+    .admin-card-header .controls-wrapper {
+        display: flex !important;
+        justify-content: flex-end !important;
+        gap: 10px !important;
+        width: 100% !important;
+        margin-top: 10px !important;
+    }
+
+    /* Games Management Buttons Grid */
+    #admin-games-card .controls-wrapper {
+        display: grid !important;
+        grid-template-columns: 1fr auto auto !important; 
+    }
+
+    /* Position 'Add New Game' button perfectly */
+    #admin-games-card .controls-wrapper a.btn-primary {
+        grid-column: 2 / 4 !important; 
+        justify-self: stretch !important; 
+        width: 100% !important;
+        margin-bottom: 5px !important;
+        margin-left: 0 !important;
+    }
+
+    #admin-games-card .controls-wrapper .dropdown:nth-of-type(1) { grid-column: 2 !important; }
+    
+    #admin-games-card .controls-wrapper .dropdown:nth-of-type(2) { grid-column: 3 !important; }
+
+    /* Manual offset for the Filter menu to prevent left-side clipping without breaking CSS stack */
+    #admin-games-card .controls-wrapper .dropdown:nth-of-type(1) .dropdown-menu { right: -100% !important; }
+
+    /* 10. Admin Forms */
+       
+    /* Form headers - prevent text squishing and truncate long titles */
+    .admin-header.flex-between {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 15px !important;
+        width: 100% !important;
+        overflow: hidden !important; 
+    }
+
+    .admin-header h1 {
+        font-size: 1.6rem !important;
+        width: 100% !important;
+        white-space: nowrap !important; 
+        overflow: hidden !important; 
+        text-overflow: ellipsis !important; 
+    }
+
+    /* Push the 'Back' button to the right edge */
+    .admin-header .btn-outline, .admin-header .btn-sm {
+        align-self: flex-end !important; 
+        margin-right: 5px !important; 
+    }
+
+    /* 11. Game Details - Layout reordering (UX) */
+
+    /* Cinematic 16:9 proportions for the game banner */
+    .game-hero {
+        height: auto !important;
+        aspect-ratio: 16 / 9 !important;
+        width: 100% !important;
+        margin-top: 0 !important;
+    }
+
+    .game-hero img {
+        width: 100% !important;
+        height: 100% !important;
+        object-fit: cover !important;
+        object-position: top center !important;
+    }
+
+    /* System Specifications Table */
+    
+    /* Protect main column from expanding */
+    .game-main-col {
+        min-width: 0 !important; 
+        max-width: 100% !important;
+    }
+
+    /* Grid blowout kill-switch for the spec box */
+    .req-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-width: 0 !important; 
+        box-sizing: border-box !important;
+        overflow: hidden !important; 
+    }
+
+    /* Enable horizontal scrolling for the inner columns */
+    .specs-wrapper {
+        display: flex !important;
+        flex-wrap: nowrap !important; 
+        overflow-x: auto !important; 
+        -webkit-overflow-scrolling: touch !important; 
+        gap: 30px !important;
+        padding-bottom: 15px !important; 
+    }
+
+    /* Prevent text squishing inside spec columns */
+    .specs-column {
+        flex: 0 0 auto !important; 
+        min-width: 260px !important; 
+    }
+
+    /* Convert the main grid into a vertical list */
+    .game-content-grid {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important; 
+    }
+
+    /* Dissolve container barriers to mix left and right column elements */
+    .game-main-col, .game-sidebar { display: contents !important; }
+
+    /* Reorder elements logically via Flexbox Order */
+    .game-title { 
+        order: 1 !important; 
+        margin-bottom: -10px !important; 
+    }
+    
+    .game-tags { order: 2 !important; }
+    .game-description { order: 3 !important; }
+    .buy-card.buy-card-flex { order: 4 !important; }
+    .buy-card.share-card { order: 5 !important; }
+    .req-box { order: 6 !important; }
+
+    /* Reset side card margins since grid gap handles spacing now */
+    .buy-card {
+        width: 100% !important;
+        box-sizing: border-box !important;
+        margin: 0 !important; 
+    }
+
+    /* 12. Global Components (Messages & Modals) */
+
+    /* Success/Error Messages - add safety margins from screen edges */
+    .messages-container, .message-box, .alert {
+        margin: 10px auto !important;
+        width: auto !important; 
+    }
+
+    /* Payment Modal - fix for visibility and margins */
+    .modal-overlay {
+        padding: 20px 25px !important;
+        box-sizing: border-box !important;
+    }
+
+    .modal-content {
+        /* Centering modal without breaking display */
+        width: 100% !important;
+        max-width: 400px !important;
+        margin: 50px auto !important;
+        box-sizing: border-box !important;
+        position: relative !important;
+    }
+
+    /* Adjust modal internal grid for small screens */
+    #payment-modal-content .form-grid-2 {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    #payment-modal-content .form-grid-2 button { width: 100% !important; }
+}
