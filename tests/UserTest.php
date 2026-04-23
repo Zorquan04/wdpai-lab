@@ -15,7 +15,22 @@ class UserTest extends TestCase {
     }
 
     public function testUserAdminRoleIsCorrect() {
-        $admin = new User('admin@gmail.com', 'pass', 'Admin', 'ADMIN');
+        $admin = new User('admin@gmail.com', 'pass', 'Admin', 'ADMIN', null);
         $this->assertTrue($admin->getRole() === 'ADMIN');
+    }
+
+    public function testNewUserHasNullIdBeforeSavingToDatabase() {
+        // Simulation of creating a new user in the system (no ID transferred from the database)
+        $newUser = new User('newuser@gmail.com', 'somehash', 'Newbie', 'USER', null);
+        
+        // Expecting that the ID will be null, allowing the repository to use INSERT instead of UPDATE
+        $this->assertNull($newUser->getId());
+    }
+
+    public function testGetPasswordReturnsCorrectHash() {
+        $fakeHash = password_hash('secret123', PASSWORD_BCRYPT);
+        $user = new User('secure@gmail.com', $fakeHash, 'SecureUser', 'USER', 2);
+        
+        $this->assertEquals($fakeHash, $user->getPassword());
     }
 }

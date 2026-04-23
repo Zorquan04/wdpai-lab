@@ -26,3 +26,25 @@ else
 fi
 
 echo "=== Tests Completed ==="
+
+# TEST 3: Check global 404 Error handler (Expected code 404)
+echo "[Test 3] Requesting non-existent page to test 404 handler..."
+NOT_FOUND_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" $BASE_URL/this-page-does-not-exist)
+
+if [ "$NOT_FOUND_STATUS" -eq 404 ]; then
+    echo "Success: Application correctly catches unknown routes (404 Not Found)."
+else
+    echo "Failed: Expected 404, got $NOT_FOUND_STATUS."
+fi
+
+# TEST 4: Check Login page availability (Expected code 200)
+echo "[Test 4] Accessing Login page..."
+LOGIN_STATUS=$(curl -o /dev/null -s -w "%{http_code}\n" $BASE_URL/login)
+
+if [ "$LOGIN_STATUS" -eq 200 ]; then
+    echo "Success: Login page is accessible (200 OK)."
+else
+    echo "Failed: Expected 200, got $LOGIN_STATUS."
+fi
+
+echo "=== Tests Completed ==="
